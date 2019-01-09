@@ -1,0 +1,12 @@
+URxvt.font: xft:monospace:size=16
+URxvt.scrollBar: false
+
+urxvt*depth: 32
+urxvt*background: rgba:0000/0000/0200/c800
+
+!URxvt.perl-ext-common:  ...,resize-font,...
+
+URxvt.keysym.Shift-Control-V: perl:clipboard:paste
+URxvt.iso14755: False
+URxvt.perl-ext-common: default,clipboard,resize-font
+

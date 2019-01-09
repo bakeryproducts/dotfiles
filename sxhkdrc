@@ -2,6 +2,13 @@
 # wm independent hotkeys
 ###########################
 
+# wal update
+alt + w
+	xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image | xargs wal -i
+
+super + alt + d
+	python /home/gleb/Documents/stream/setstream.py 
+
 # rofi program launcher
 alt + Return
 	rofi -show drun
@@ -12,7 +19,8 @@ alt + Tab
 
 # terminal emulator
 alt + space
-	xfce4-terminal
+	urxvt
+#	xfce4-terminal
 
 # thunar
 alt + f
@@ -27,9 +35,6 @@ super + l
 	kill -9 -1
 
 
-# make sxhkd reload its configuration files
-alt + Escape
-	pkill -USR1 -x sxhkd
 
 
 ###########################
@@ -114,7 +119,7 @@ super + shift + {Left,Down,Up,Right}
 
 
 # Preselect the splitting area for next window on leaf/parent
-super + ctrl + {x,c,v,b}
+super + alt + {x,c,v,b}
 	bspc node --presel-dir \~{west,south,north,east}
 
 # Cancel preselection
