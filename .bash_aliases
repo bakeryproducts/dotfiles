@@ -1,3 +1,4 @@
+
 alias rr='ranger'
 alias cc='clean'
 alias ls='ls --color=auto'
