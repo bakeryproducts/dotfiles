@@ -55,3 +55,5 @@ eval "$(fasd --init auto)"
 if [ -f ~/.glebash_env ]; then
     . ~/.glebash_env
 fi
+git config --global user.name "$GITUSER"
+git config --global user.email "$GITMAIL"
