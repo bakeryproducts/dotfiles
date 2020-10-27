@@ -13,12 +13,13 @@ from Xlib.ext import randr
 
 def get_screens():
     d = display.Display()
-    res = d.screen().root.xrandr_get_screen_resources()._data
-    num_screens = 0
-    for output in res['outputs']:
-        mon = d.xrandr_get_output_info(output, res['config_timestamp'])._data
-        if mon['preferred']: num_screens += 1
-    return num_screens
+    return d.screen_count()
+    #res = d.screen().root.xrandr_get_screen_resources()._data
+    #num_screens = 0
+    #for output in res['outputs']:
+    #    mon = d.xrandr_get_output_info(output, res['config_timestamp'])._data
+    #    if mon['preferred']: num_screens += 1
+    #return num_screens
 
 def init_keys():
     keys = [
@@ -74,7 +75,7 @@ def init_groups():
     global num_screens
     global mod
 
-    pinned_groups = '1234567890' if num_screens == 1 else  ['12345', '67890']
+    pinned_groups = ['1234567890'] if num_screens == 1 else  ['12345', '67890']
     all_groups = ''.join(pinned_groups)
     groups = [Group(i) for i in all_groups]
     group_keys = []
