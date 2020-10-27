@@ -1,29 +1,3 @@
-# Copyright (c) 2010 Aldo Cortesi
-# Copyright (c) 2010, 2014 dequis
-# Copyright (c) 2012 Randall Ma
-# Copyright (c) 2012-2014 Tycho Andersen
-# Copyright (c) 2012 Craig Barnes
-# Copyright (c) 2013 horsik
-# Copyright (c) 2013 Tao Sauvage
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 import os
 import subprocess
 from typing import List  # noqa: F401
@@ -34,133 +8,113 @@ from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 
 
-
 from Xlib import display
 from Xlib.ext import randr
 
 def get_screens():
     d = display.Display()
-    s = d.screen()
-    r = s.root
-    res = r.xrandr_get_screen_resources()._data
-
-    # Dynamic multiscreen! (Thanks XRandr)
+    res = d.screen().root.xrandr_get_screen_resources()._data
     num_screens = 0
     for output in res['outputs']:
-        print("Output %d:" % (output))
         mon = d.xrandr_get_output_info(output, res['config_timestamp'])._data
-        print(f"{mon['name']}, {mon['preferred']}")
-        if mon['preferred']:
-            num_screens += 1
+        if mon['preferred']: num_screens += 1
     return num_screens
 
-num_screens = get_screens()
+def init_keys():
+    keys = [
+        # Switch between windows
+        #Key([mod], "Return", lazy.layout.left(), desc="Move focus to left"),
+        #Key([mod], "Return", lazy.layout.right(), desc="Move focus to right"),
+        Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
+        Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
+        Key([mod], "n", lazy.layout.next(), desc="Move window focus to other window"),
 
+        # Move windows between left/right columns or move up/down in current stack.
+        # Moving out of range in Columns layout will create new column.
+        Key([mod], "n", lazy.layout.shuffle_left(), desc="Move window to the left"),
+        Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
+        Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
+        Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
 
+        # Grow windows. If current window is on the edge of screen and direction
+        # will be to screen edge - window would shrink.
+        Key([mod, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
+        Key([mod, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"),
+        Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
+        Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
 
-mod = "mod1"
-terminal = "urxvt"
+        # Toggle between split and unsplit sides of stack.
+        # Split = all windows displayed
+        # Unsplit = 1 window displayed, like Max layout, but still with
+        # multiple stack panes
+        Key([mod, "shift"], "Return", lazy.layout.toggle_split(), desc="Toggle between split and unsplit sides of stack"),
+        Key([mod], "space", lazy.spawn(terminal), desc="Launch terminal"),
 
-keys = [
-    # Switch between windows
-    #Key([mod], "Return", lazy.layout.left(), desc="Move focus to left"),
-    #Key([mod], "Return", lazy.layout.right(), desc="Move focus to right"),
-    Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
-    Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
-    Key([mod], "n", lazy.layout.next(), desc="Move window focus to other window"),
+        # Toggle between different layouts as defined below
+        Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
+        Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
 
-    # Move windows between left/right columns or move up/down in current stack.
-    # Moving out of range in Columns layout will create new column.
-    Key([mod], "n", lazy.layout.shuffle_left(), desc="Move window to the left"),
-    Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
-    Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
-    Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
+        Key([mod, "control"], "r", lazy.restart(), desc="Restart Qtile"),
+        Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+        #Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
 
-    # Grow windows. If current window is on the edge of screen and direction
-    # will be to screen edge - window would shrink.
-    Key([mod, "control"], "h", lazy.layout.grow_left(),
-        desc="Grow window to the left"),
-    Key([mod, "control"], "l", lazy.layout.grow_right(),
-        desc="Grow window to the right"),
-    Key([mod, "control"], "j", lazy.layout.grow_down(),
-        desc="Grow window down"),
-    Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
+        # CUSTOM
+        Key([mod], "d", lazy.spawn("dmenu_run -p 'Run: '"), desc='Dmenu Run Launcher'),
+        Key([mod], "h", lazy.layout.grow(), lazy.layout.increase_nmaster(), desc='Expand window (MonadTall), increase number in master pane (Tile)'),
+        Key([mod], "l", lazy.layout.shrink(), lazy.layout.decrease_nmaster(), desc='Shrink window (MonadTall), decrease number in master pane (Tile)'),
+        Key([mod], "r", lazy.layout.reset(), desc='normalize window size ratios'),
+        Key([mod], "m", lazy.layout.maximize(), desc='maximizse window size ratios'),
+        Key([mod], "f", lazy.window.toggle_fullscreen(), desc='toggle fullscreen'),
+        Key([mod], 't', lazy.window.toggle_floating()),
+    ]
 
-    # Toggle between split and unsplit sides of stack.
-    # Split = all windows displayed
-    # Unsplit = 1 window displayed, like Max layout, but still with
-    # multiple stack panes
-    Key([mod, "shift"], "Return", lazy.layout.toggle_split(),
-        desc="Toggle between split and unsplit sides of stack"),
-    Key([mod], "space", lazy.spawn(terminal), desc="Launch terminal"),
+    return keys
 
-    # Toggle between different layouts as defined below
-    Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
-    Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
+def init_groups():
+    global num_screens
+    global mod
 
-    Key([mod, "control"], "r", lazy.restart(), desc="Restart Qtile"),
-    Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    #Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+    pinned_groups = '1234567890' if num_screens == 1 else  ['12345', '67890']
+    all_groups = ''.join(pinned_groups)
+    groups = [Group(i) for i in all_groups]
+    group_keys = []
 
-    # CUSTOM
-    Key([mod], "d", lazy.spawn("dmenu_run -p 'Run: '"), desc='Dmenu Run Launcher'),
-    Key([mod], "h", lazy.layout.grow(), lazy.layout.increase_nmaster(), desc='Expand window (MonadTall), increase number in master pane (Tile)'),
-    Key([mod], "l", lazy.layout.shrink(), lazy.layout.decrease_nmaster(), desc='Shrink window (MonadTall), decrease number in master pane (Tile)'),
-    Key([mod], "r", lazy.layout.reset(), desc='normalize window size ratios'),
-    Key([mod], "m", lazy.layout.maximize(), desc='maximizse window size ratios'),
-    Key([mod], "f", lazy.window.toggle_fullscreen(), desc='toggle fullscreen'),
-    Key([mod], 't', lazy.window.toggle_floating()),
-]
+    for j, names in enumerate(pinned_groups):
+        group_keys += [Key([mod], i, lazy.to_screen(j), lazy.group[i].toscreen()) for i in names]
 
-groups = [Group(i) for i in "123456789"]
+    group_keys += [Key([mod, 'shift'], i, lazy.window.togroup(i)) for i in all_groups]
 
-for i in groups:
-    keys.extend([
-        # mod1 + letter of group = switch to group
-        Key([mod], i.name, lazy.group[i.name].toscreen(),
-            desc="Switch to group {}".format(i.name)),
+    return pinned_groups, groups, group_keys 
 
-        # mod1 + shift + letter of group = switch to & move focused window to group
-        Key([mod, "shift"], i.name, lazy.window.togroup(i.name, switch_group=True),
-            desc="Switch to & move focused window to group {}".format(i.name)),
-        # Or, use below if you prefer not to switch to that group.
-        # # mod1 + shift + letter of group = move focused window to group
-        # Key([mod, "shift"], i.name, lazy.window.togroup(i.name),
-        #     desc="move focused window to group {}".format(i.name)),
-    ])
+def init_layouts():
+    global border_focus 
+    layouts = [
+        layout.MonadTall(new_at_current=False, border_focus=border_focus, border_width=1, margin=0, ratio=.6),
+        layout.Stack(num_stacks=2),
+        layout.Tile(shift_windows=True),
+        #layout.Columns(border_focus_stack='#d75f5f'),
+        #layout.Max(),
+        # layout.Matrix(),
+        # layout.MonadWide(),
+        # layout.VerticalTile(),
+    ]
+    return layouts
 
-layouts = [
-    layout.MonadTall(new_at_current=False, border_focus="#00FF00", border_width=1, margin=0, ratio=.6),
-    #layout.Columns(border_focus_stack='#d75f5f'),
-    #layout.Max(),
-    # Try more layouts by unleashing below layouts.
-    layout.Stack(num_stacks=2),
-    # layout.Bsp(),
-    # layout.Matrix(),
-    # layout.MonadWide(),
-    # layout.RatioTile(),
-    layout.Tile(shift_windows=True),
-    # layout.TreeTab(),
-    # layout.VerticalTile(),
-    # layout.Zoomy(),
-]
+def init_widgets():
+    widget_defaults = dict(
+        font='sans',
+        fontsize=12,
+        padding=3,
+    )
+    extension_defaults = widget_defaults.copy()
+    return extension_defaults 
 
-widget_defaults = dict(
-    font='sans',
-    fontsize=12,
-    padding=3,
-)
-extension_defaults = widget_defaults.copy()
-
-screens = []
-for screen in range(0, num_screens):
-    screens.append(
-        Screen(
-            bottom=bar.Bar(
+def get_bbar(pin_group):
+    return bar.Bar(
             [
                 widget.CurrentLayout(),
                 widget.Sep(),
-                widget.GroupBox(),
+                widget.GroupBox(visible_groups=pin_group),
                 widget.Prompt(),
                 widget.Sep(),
                 widget.WindowName(),
@@ -170,11 +124,32 @@ for screen in range(0, num_screens):
                 widget.QuickExit(),
             ],
             24,
-             ),
-        )
-    )
+     )
 
-# Drag floating layouts.
+def init_screens(pinned_groups):
+    global num_screens
+    screens = []
+    for screen in range(0, num_screens):
+        screens.append( Screen(bottom=get_bbar(pinned_groups[screen])) )
+    return screens 
+
+#def main():
+num_screens = get_screens()
+mod = "mod1"
+terminal = "urxvt"
+border_focus = '#E6C229'
+keys = init_keys()
+pinned_groups, groups , group_keys = init_groups()
+layouts = init_layouts()
+extension_defaults = init_widgets()
+screens = init_screens(pinned_groups)
+keys += group_keys
+
+auto_fullscreen = True
+focus_on_window_activation = "smart"
+wmname = "LG3D"
+
+
 mouse = [
     Drag([mod], "Button1", lazy.window.set_position_floating(),
          start=lazy.window.get_position()),
@@ -206,8 +181,6 @@ floating_layout = layout.Floating(float_rules=[
     {'wname': 'pinentry'},  # GPG key password entry
     {'wmclass': 'ssh-askpass'},  # ssh-askpass
 ])
-auto_fullscreen = True
-focus_on_window_activation = "smart"
 
 @hook.subscribe.startup_once 
 def autostart():
@@ -215,13 +188,5 @@ def autostart():
     subprocess.call([home + '/.config/qtile/autostart.sh'])
 
 
-# XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
-# string besides java UI toolkits; you can see several discussions on the
-# mailing lists, GitHub issues, and other WM documentation that suggest setting
-# this string if your java app doesn't work correctly. We may as well just lie
-# and say that we're a working one by default.
-#
-# We choose LG3D to maximize irony: it is a 3D non-reparenting WM written in
-# java that happens to be on java's whitelist.
-wmname = "LG3D"
-
+#if __name__ == '__main__':
+#    main()
