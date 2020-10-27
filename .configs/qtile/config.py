@@ -33,8 +33,33 @@ from libqtile.config import Click, Drag, Group, Key, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 
+
+
+from Xlib import display
+from Xlib.ext import randr
+
+def get_screens():
+    d = display.Display()
+    s = d.screen()
+    r = s.root
+    res = r.xrandr_get_screen_resources()._data
+
+    # Dynamic multiscreen! (Thanks XRandr)
+    num_screens = 0
+    for output in res['outputs']:
+        print("Output %d:" % (output))
+        mon = d.xrandr_get_output_info(output, res['config_timestamp'])._data
+        print(f"{mon['name']}, {mon['preferred']}")
+        if mon['preferred']:
+            num_screens += 1
+    return num_screens
+
+num_screens = get_screens()
+
+
+
 mod = "mod1"
-terminal = "urxvt"#guess_terminal()
+terminal = "urxvt"
 
 keys = [
     # Switch between windows
@@ -105,7 +130,7 @@ for i in groups:
     ])
 
 layouts = [
-    layout.MonadTall(new_at_current=False, border_focus="#00FF00", border_width=1, margin=2, ratio=.6),
+    layout.MonadTall(new_at_current=False, border_focus="#00FF00", border_width=1, margin=0, ratio=.6),
     #layout.Columns(border_focus_stack='#d75f5f'),
     #layout.Max(),
     # Try more layouts by unleashing below layouts.
@@ -127,30 +152,27 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
-screens = [
-    Screen(
-        bottom=bar.Bar(
+screens = []
+for screen in range(0, num_screens):
+    screens.append(
+        Screen(
+            bottom=bar.Bar(
             [
                 widget.CurrentLayout(),
+                widget.Sep(),
                 widget.GroupBox(),
                 widget.Prompt(),
+                widget.Sep(),
                 widget.WindowName(),
-                widget.Chord(
-                    chords_colors={
-                        'launch': ("#ff0000", "#ffffff"),
-                    },
-                    name_transform=lambda name: name.upper(),
-                ),
-                widget.TextBox("default config", name="default"),
-                widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
-                widget.Systray(),
-                widget.Clock(format='%Y-%m-%d %a %I:%M %p'),
+                widget.Sep(),
+                #widget.Systray(),
+                widget.Clock(format='%d-%m %a %I:%M %p'),
                 widget.QuickExit(),
             ],
             24,
-        ),
-    ),
-]
+             ),
+        )
+    )
 
 # Drag floating layouts.
 mouse = [
