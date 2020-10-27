@@ -32,7 +32,7 @@ def init_keys():
 
         # Move windows between left/right columns or move up/down in current stack.
         # Moving out of range in Columns layout will create new column.
-        Key([mod], "n", lazy.layout.shuffle_left(), desc="Move window to the left"),
+        Key([mod, "shift"], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
         Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
         Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
         Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
@@ -61,12 +61,14 @@ def init_keys():
 
         # CUSTOM
         Key([mod], "d", lazy.spawn("dmenu_run -p 'Run: '"), desc='Dmenu Run Launcher'),
-        Key([mod], "h", lazy.layout.grow(), lazy.layout.increase_nmaster(), desc='Expand window (MonadTall), increase number in master pane (Tile)'),
-        Key([mod], "l", lazy.layout.shrink(), lazy.layout.decrease_nmaster(), desc='Shrink window (MonadTall), decrease number in master pane (Tile)'),
+        Key([mod], "h", lazy.layout.grow(), lazy.layout.increase_nmaster(), desc='Expand master window'),
+        Key([mod], "l", lazy.layout.shrink(), lazy.layout.decrease_nmaster(), desc='Shrink master window'),
         Key([mod], "r", lazy.layout.reset(), desc='normalize window size ratios'),
         Key([mod], "m", lazy.layout.maximize(), desc='maximizse window size ratios'),
         Key([mod], "f", lazy.window.toggle_fullscreen(), desc='toggle fullscreen'),
         Key([mod], 't', lazy.window.toggle_floating()),
+        Key([mod], 'Return', lazy.layout.swap_main()),
+
     ]
 
     return keys
