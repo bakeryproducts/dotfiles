@@ -8,18 +8,12 @@ from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 
 
-from Xlib import display
-from Xlib.ext import randr
+import gi
+gi.require_version("Gdk", "3.0")
+from gi.repository import Gdk
 
-def get_screens():
-    d = display.Display()
-    return d.screen_count()
-    #res = d.screen().root.xrandr_get_screen_resources()._data
-    #num_screens = 0
-    #for output in res['outputs']:
-    #    mon = d.xrandr_get_output_info(output, res['config_timestamp'])._data
-    #    if mon['preferred']: num_screens += 1
-    #return num_screens
+
+def get_screens(): return Gdk.Display.get_default().get_n_monitors()    
 
 def init_keys():
     keys = [
@@ -95,11 +89,6 @@ def init_layouts():
         layout.MonadTall(new_at_current=False, border_focus=border_focus, border_width=1, margin=0, ratio=.6),
         layout.Stack(num_stacks=2),
         layout.Tile(shift_windows=True),
-        #layout.Columns(border_focus_stack='#d75f5f'),
-        #layout.Max(),
-        # layout.Matrix(),
-        # layout.MonadWide(),
-        # layout.VerticalTile(),
     ]
     return layouts
 

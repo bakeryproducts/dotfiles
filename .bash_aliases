@@ -1,6 +1,6 @@
 
 alias rr='ranger'
-alias cc='clean'
+alias cc='clear'
 alias ls='ls --color=auto'
 alias ll='ls -alFh'
 alias la='ls -A'
