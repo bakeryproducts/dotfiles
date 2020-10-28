@@ -1,0 +1,23 @@
+set nocompatible
+syntax on
+
+set number
+set relativenumber
+
+set tabstop=4
+set expandtab
+set hidden
+
+set wildmenu
+set hlsearch
+
+set ignorecase
+set smartcase
+
+set backspace=indent,eol,start
+set autoindent
+set laststatus=2
+
+set mouse=a
+set cmdheight=2
+map Y y$

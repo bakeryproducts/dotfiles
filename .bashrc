@@ -43,6 +43,15 @@ xterm*|rxvt*)
     ;;
 esac
 
+if [ -f ~/.sec_glebash ]; then
+    . ~/.sec_glebash
+    git config --global user.name "$GITUSER"
+    git config --global user.email "$GITMAIL"
+fi
+
+if [ -f ~/.glebash ]; then
+    . ~/.glebash
+fi
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
@@ -52,8 +61,4 @@ eval "$(fasd --init auto)"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-if [ -f ~/.glebash_env ]; then
-    . ~/.glebash_env
-fi
-git config --global user.name "$GITUSER"
-git config --global user.email "$GITMAIL"
+

@@ -77,7 +77,7 @@ def init_groups():
     group_keys = []
 
     for j, names in enumerate(pinned_groups):
-        group_keys += [Key([mod], i, lazy.to_screen(j), lazy.group[i].toscreen()) for i in names]
+        group_keys += [Key([mod], i, lazy.to_screen(j), lazy.group[i].toscreen(toggle=False)) for i in names]
 
     group_keys += [Key([mod, 'shift'], i, lazy.window.togroup(i)) for i in all_groups]
 
