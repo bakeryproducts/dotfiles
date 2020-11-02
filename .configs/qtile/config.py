@@ -102,18 +102,83 @@ def init_widgets():
     return extension_defaults 
 
 def get_bbar(pin_group):
+    colors = [["#292d3e", "#292d3e"], # panel background          
+            ["#F9DF74", "#F9DF74"], # background for current screen tab          
+            ["#ffffff", "#ffffff"], # font color for group names           
+            ["#4B3B47", "#4B3B47"], # border line color for current tab           
+            ["#8d62a9", "#8d62a9"], # border line color for other tab and odd widgets          
+            ["#668bd7", "#668bd7"], # color for the even widgets          
+            ["#ffffff", "#ffffff"]] # window name
+
+    widget_defaults = dict(
+        font="Ubuntu Mono",
+        fontsize = 12,
+        padding = 2,
+        background=colors[2]
+    )
+    extension_defaults = widget_defaults.copy()
+
+    sep = widget.Sep(
+               linewidth = 0,
+               padding = 6,
+               foreground = colors[2],
+               background = colors[0]
+               )
+    
+    gb = widget.GroupBox(
+           font = "Ubuntu Bold",
+           fontsize = 10,
+           margin_y = 3,
+           margin_x = 0,
+           padding_y = 3,
+           padding_x = 13,
+           borderwidth = 2,
+           active = colors[2],
+           inactive = colors[2],
+           rounded = False,
+           highlight_color = colors[1],
+           highlight_method = "line",
+           this_current_screen_border = colors[3],
+           this_screen_border = colors [4],
+           other_current_screen_border = colors[0],
+           other_screen_border = colors[0],
+           foreground = colors[2],
+           background = colors[0],
+           visible_groups=pin_group
+           )
+    wn = widget.WindowName(
+                       foreground = colors[6],
+                       background = colors[0],
+                       padding = 0
+                       )
+   
+    clock = widget.Clock(format='%d-%m %a %I:%M %p',
+                       foreground = colors[2],
+                       background = colors[0],
+            
+            )
+
+    tri = widget.TextBox(
+        text = '🌡',
+        background = colors[4],
+        foreground = colors[5],
+        padding = 0,
+        fontsize = 37
+        )
+
+
     return bar.Bar(
-            [
-                widget.CurrentLayout(),
-                widget.Sep(),
-                widget.GroupBox(visible_groups=pin_group),
+                [
+                #widget.CurrentLayout(),
+                sep, 
+                gb,#widget.GroupBox(visible_groups=pin_group),
                 widget.Prompt(),
-                widget.Sep(),
-                widget.WindowName(),
-                widget.Sep(),
-                #widget.Systray(),
-                widget.Clock(format='%d-%m %a %I:%M %p'),
-                widget.QuickExit(),
+                sep,
+                wn,
+                sep,
+                #tri,
+                clock,#widget.Clock(format='%d-%m %a %I:%M %p'),
+                #widget.QuickExit(),
             ],
             24,
      )
@@ -136,6 +201,10 @@ layouts = init_layouts()
 extension_defaults = init_widgets()
 screens = init_screens(pinned_groups)
 keys += group_keys
+
+
+
+
 
 auto_fullscreen = True
 focus_on_window_activation = "smart"
