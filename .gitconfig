@@ -1,3 +1,5 @@
 [user]
 	email = $GITMAIL 
-	name = $GITUSER
+	name = $GITUSER 
+[credential]
+    helper = store
