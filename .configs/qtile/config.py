@@ -54,6 +54,7 @@ def init_keys():
         #Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
 
         # CUSTOM
+        Key([mod], "v", lazy.spawn("shmulbuf"), desc='Shallow-run multibuffer'),
         Key([mod], "d", lazy.spawn("dmenu_run -p 'Run: '"), desc='Dmenu Run Launcher'),
         Key([mod], "h", lazy.layout.grow(), lazy.layout.increase_nmaster(), desc='Expand master window'),
         Key([mod], "l", lazy.layout.shrink(), lazy.layout.decrease_nmaster(), desc='Shrink master window'),
