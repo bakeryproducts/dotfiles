@@ -51,8 +51,9 @@ if ! shopt -oq posix; then
    fi
  fi
 
-
-
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
 
 if [ -f ~/.sec_glebash ]; then
     . ~/.sec_glebash
