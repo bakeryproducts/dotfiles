@@ -72,4 +72,5 @@ eval "$(fasd --init auto)"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-
+export MYVIMRC="~/.config/vim/vimrc"
+export VIMINIT=":set runtimepath+=~/.config/vim|:source $MYVIMRC"
