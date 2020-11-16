@@ -83,7 +83,7 @@ URxvt.transparent: true
 URxvt.shading:30
 URxvt.foreground: #eeeeee
 
-URxvt.font: xft:Iosevka:style=Regular:pixelsize=18
+URxvt.font: xft:Iosevka:style=Regular:pixelsize=24
 !URxvt.boldFont: xft:Iosevka:style=Bold:pixelsize=18
 !URxvt.italicFont: xft:Iosevka:style=Italic:pixelsize=18
 !URxvt.boldItalicfont: -*-rissole-*
@@ -109,7 +109,7 @@ URxvt.keysym.Control-Right: \033[1;5C
 URxvt.keysym.Control-Left: \033[1;5D
 
 !! Copy Paste & Other Extensions
-URxvt.perl-ext-common: default,resize-font,keyboard-select, clipboard
+URxvt.perl-ext-common: default,resize-font,keyboard-select,clipboard
 !default!,clipboard,url-select,keyboard-select,resize-font
 URxvt.resize-font.step: 2
 !URxvt.keysym.C-j:     resize-font:smaller

@@ -51,8 +51,9 @@ if ! shopt -oq posix; then
    fi
  fi
 
-
-
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
 
 if [ -f ~/.sec_glebash ]; then
     . ~/.sec_glebash
@@ -72,4 +73,5 @@ eval "$(fasd --init auto)"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-
+export MYVIMRC="~/.config/vim/vimrc"
+export VIMINIT=":set runtimepath+=~/.config/vim|:source $MYVIMRC"

@@ -5,7 +5,9 @@ alias ll='ls -alFh'
 alias la='ls -A'
 alias l='ls -CF'
 #alias si='ssh $DB7USER@$DB7HOST'
-alias sj='echo $DB7USER'
+alias sai='sudo apt install'
+alias sau='sudo apt update'
+alias restart='sudo shutdown -r now'
 
 #zz()
 #{

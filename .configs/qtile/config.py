@@ -64,6 +64,8 @@ def init_keys():
         Key([mod], 't', lazy.window.toggle_floating()),
         Key([mod], 'Return', lazy.layout.swap_main()),
 
+        Key([], "XF86MonBrightnessUp", lazy.spawn("light -A 3"), desc=''),
+        Key([], "XF86MonBrightnessDown", lazy.spawn("light -U 3"), desc=''),
     ]
 
     return keys
@@ -88,8 +90,8 @@ def init_layouts():
     global border_focus 
     layouts = [
         layout.MonadTall(new_at_current=False, border_focus=border_focus, border_width=1, margin=0, ratio=.6),
-        layout.Stack(num_stacks=2),
-        layout.Tile(shift_windows=True),
+        #layout.Stack(num_stacks=2),
+        #layout.Tile(shift_windows=True),
     ]
     return layouts
 
@@ -135,7 +137,7 @@ def get_bbar(pin_group):
            padding_x = 13,
            borderwidth = 2,
            active = colors[2],
-           inactive = colors[2],
+           inactive = colors[0],
            rounded = False,
            highlight_color = colors[1],
            highlight_method = "line",
