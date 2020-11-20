@@ -4,13 +4,22 @@ if empty(glob('~/.config/vim/autoload/plug.vim'))
        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
     endif
 "set nocompatible
-syntax on
+syntax enable
+let mapleader = ' '
 
-set number
-set relativenumber
+set number relativenumber
+set noswapfile
+set scrolloff=5
+set backspace=indent,eol,start
 
+" Pythonic stuff
 set tabstop=4
 set expandtab
+set softtabstop=4
+set shiftwidth=4
+set autoindent
+set fileformat=unix
+
 set hidden
 
 set wildmenu
@@ -19,8 +28,6 @@ set hlsearch
 set ignorecase
 set smartcase
 
-set backspace=indent,eol,start
-set autoindent
 set laststatus=2
 
 "set mouse=a
@@ -31,9 +38,21 @@ set ttimeoutlen=50
 call plug#begin('~/.config/vim/plugged')
 Plug 'scrooloose/nerdtree'
 Plug 'vim-airline/vim-airline'
+Plug 'jiangmiao/auto-pairs' 
+
 Plug 'morhetz/gruvbox' 
 call plug#end()
 
+let g:airline_theme='gruvbox'
+
+colorscheme gruvbox
+let g:gruvbox_transparent_bg = 1
+set background=dark
+highlight Normal     ctermbg=NONE guibg=NONE
+highlight LineNr     ctermbg=NONE guibg=NONE
+highlight SignColumn ctermbg=NONE guibg=NONE
 
 
-
+nmap <leader>h :bn<CR>
+nmap <leader>l :bp<CR>
+nmap <C-w> :bd<CR>
