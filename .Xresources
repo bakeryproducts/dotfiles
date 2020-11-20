@@ -87,7 +87,7 @@ URxvt.font: xft:Iosevka:style=Regular:pixelsize=24
 !URxvt.boldFont: xft:Iosevka:style=Bold:pixelsize=18
 !URxvt.italicFont: xft:Iosevka:style=Italic:pixelsize=18
 !URxvt.boldItalicfont: -*-rissole-*
-URxvt.letterSpace: 0
+URxvt.letterSpace: -1
 URxvt.lineSpace: 0
 URxvt.geometry: 92x24
 URxvt.internalBorder: 24

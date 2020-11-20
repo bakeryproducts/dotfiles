@@ -31,6 +31,7 @@ map Y y$
 call plug#begin('~/.config/vim/plugged')
 Plug 'scrooloose/nerdtree'
 Plug 'vim-airline/vim-airline'
+Plug 'morhetz/gruvbox' 
 call plug#end()
 
 

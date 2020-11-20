@@ -66,6 +66,8 @@ def init_keys():
 
         Key([], "XF86MonBrightnessUp", lazy.spawn("light -A 3"), desc=''),
         Key([], "XF86MonBrightnessDown", lazy.spawn("light -U 3"), desc=''),
+        Key([], "XF86AudioRaiseVolume", lazy.spawn("pactl set-sink-volume 0 +5%"), desc=''),
+        Key([], "XF86AudioLowerVolume", lazy.spawn("pactl set-sink-volume 0 -5%"), desc=''),
     ]
 
     return keys
