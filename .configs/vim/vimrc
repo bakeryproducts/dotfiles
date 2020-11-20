@@ -26,7 +26,7 @@ set laststatus=2
 "set mouse=a
 set cmdheight=2
 map Y y$
-
+set ttimeoutlen=50
 
 call plug#begin('~/.config/vim/plugged')
 Plug 'scrooloose/nerdtree'
