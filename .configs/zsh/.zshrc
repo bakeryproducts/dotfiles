@@ -89,12 +89,8 @@ if [ -f ~/.sec_glebash ]; then
     git config --global user.email "$GITMAIL"
 fi
 
-if [ -f ~/.glebash ]; then
-    . ~/.glebash
-fi
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+if [ -f ~/.config/zsh/.sh_aliases ]; then
+    . ~/.config/zsh/.sh_aliases
 fi
 
 #eval "$(fasd --init auto)"

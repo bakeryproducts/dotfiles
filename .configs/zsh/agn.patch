@@ -1,0 +1,22 @@
+diff --git a/themes/agnoster.zsh-theme b/themes/agnoster.zsh-theme
+index 99707f6..b622576 100644
+--- a/themes/agnoster.zsh-theme
++++ b/themes/agnoster.zsh-theme
+@@ -89,7 +89,7 @@ prompt_end() {
+ # Context: user@hostname (who am I and where am I)
+ prompt_context() {
+   if [[ "$USER" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
+-    prompt_segment black default "%(!.%{%F{yellow}%}.)%n@%m"
++    prompt_segment black default "%(!.%{%F{yellow}%}.)%n|%m"
+   fi
+ }
+ 
+@@ -204,7 +204,7 @@ prompt_hg() {
+ 
+ # Dir: current working directory
+ prompt_dir() {
+-  prompt_segment blue $CURRENT_FG '%~'
++  prompt_segment blue $CURRENT_FG '%1~'
+ }
+ 
+ # Virtualenv: current working virtualenv
