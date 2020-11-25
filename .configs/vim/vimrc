@@ -52,7 +52,8 @@ highlight Normal     ctermbg=NONE guibg=NONE
 highlight LineNr     ctermbg=NONE guibg=NONE
 highlight SignColumn ctermbg=NONE guibg=NONE
 
-
+nnoremap ; :
+nnoremap : ;
 nmap <leader>h :bn<CR>
 nmap <leader>l :bp<CR>
 nmap <C-w> :bd<CR>
