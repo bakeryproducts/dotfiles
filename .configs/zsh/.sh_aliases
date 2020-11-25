@@ -16,5 +16,5 @@ alias restart='sudo shutdown -r now'
 
 si()
 {
-ssh -t $DB7USER@$DB7HOST env SFTPPASS=$SFTPPASS env SFTPUSER=$SFTPUSER bash
+ssh -t $DB7USER@$DB7HOST env SFTPPASS=$SFTPPASS env SFTPUSER=$SFTPUSER zsh 
 }
