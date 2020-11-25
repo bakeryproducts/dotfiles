@@ -1,0 +1,3 @@
+#!/bin/sh
+envsubst \$USER < .fzf.zsh > t && \
+cat t > .fzf.zsh
