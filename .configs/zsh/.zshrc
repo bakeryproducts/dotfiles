@@ -1,5 +1,5 @@
 
-export ZSH="/home/gsm/.oh-my-zsh"
+export ZSH="/home/$USER/.oh-my-zsh"
 ZSH_THEME="agnoster"
 DISABLE_AUTO_UPDATE="true"
 DISABLE_UPDATE_PROMPT="true"
@@ -83,4 +83,5 @@ if [ -f ~/.config/zsh/.sh_aliases ]; then
 fi
 
 #eval "$(fasd --init auto)"
+eval "$(fasd --init posix-alias zsh-hook)"
 [ -f ~/.config/zsh/.fzf.zsh ] && source ~/.config/zsh/.fzf.zsh 
