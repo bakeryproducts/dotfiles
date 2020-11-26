@@ -1,3 +1,4 @@
 #!/bin/sh
 envsubst \$USER < .fzf.zsh > t && \
-cat t > .fzf.zsh
+cat t > .fzf.zsh && \
+rm t
