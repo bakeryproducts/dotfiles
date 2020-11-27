@@ -59,6 +59,7 @@ bindkey "^k" history-beginning-search-backward
 bindkey "^j" history-beginning-search-forward
 
 export LANG=en_US.UTF-8
+export LC_ALL="en_US.UTF-8"
 export EDITOR='vim'
 
 alias zshcfg="vim ~/.config/zsh/.zshrc"
