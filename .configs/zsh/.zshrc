@@ -3,8 +3,8 @@ export ZSH="/home/$USER/.oh-my-zsh"
 ZSH_THEME="agnoster"
 DISABLE_AUTO_UPDATE="true"
 DISABLE_UPDATE_PROMPT="true"
-ENABLE_CORRECTION="true"
-plugins=(git)
+#ENABLE_CORRECTION="true"
+plugins=(git extract)
 HISTFILE=~/.config/zsh/.zsh_history
 source $ZSH/oh-my-zsh.sh
 
@@ -63,6 +63,7 @@ export LC_ALL="en_US.UTF-8"
 export EDITOR='vim'
 
 alias zshcfg="vim ~/.config/zsh/.zshrc"
+alias vimcfg="vim ~/.config/vim/vimrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 
 export MYVIMRC="~/.config/vim/vimrc"
