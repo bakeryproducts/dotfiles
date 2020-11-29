@@ -7,6 +7,8 @@ DISABLE_UPDATE_PROMPT="true"
 plugins=(git extract)
 HISTFILE=~/.config/zsh/.zsh_history
 source $ZSH/oh-my-zsh.sh
+KEYTIMEOUT=1
+
 
 # History
 HISTSIZE=100000000
@@ -34,16 +36,34 @@ bindkey -v '^?' backward-delete-char
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
 
-function zle-line-init zle-keymap-select {
-    RPS1="${${KEYMAP/vicmd/-N}/(main|viins)/-I}"
-    RPS2=$RPS1
-    zle reset-prompt
-}
 
-zle -N zle-line-init
+function zle-keymap-select {
+  if [[ ${KEYMAP} == vicmd ]] ||
+     [[ $1 = 'block' ]]; then
+    echo -ne '\e[1 q\033]12;Green\007'
+  elif [[ ${KEYMAP} == main ]] ||
+       [[ ${KEYMAP} == viins ]] ||
+       [[ ${KEYMAP} = '' ]] ||
+       [[ $1 = 'beam' ]]; then
+    echo -ne '\e[5 q\033]12;Grey\007'
+  fi
+}
 zle -N zle-keymap-select
 
+zle-line-init() {
+    zle -K viins 
+    echo -ne "\e[5 q"
+}
+zle -N zle-line-init
 
+_fix_cursor() {
+   echo -ne '\e[5 q'
+}
+
+precmd_functions+=(_fix_cursor)
+zle-line-finish() { echo -ne "\e[2 q" }
+
+# prepend sudo
 sudo-command-line() {
     [[ -z $BUFFER ]] && zle up-history
     [[ $BUFFER != sudo\ * ]] && BUFFER="sudo ${BUFFER% }"
@@ -64,6 +84,8 @@ export EDITOR='vim'
 
 alias zshcfg="vim ~/.config/zsh/.zshrc"
 alias vimcfg="vim ~/.config/vim/vimrc"
+alias astcfg="vim ~/.config/qtile/autostart.sh"
+alias qticfg="vim ~/.config/qtile/config.py"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 
 export MYVIMRC="~/.config/vim/vimrc"
@@ -87,3 +109,6 @@ fi
 #eval "$(fasd --init auto)"
 eval "$(fasd --init posix-alias zsh-hook)"
 [ -f ~/.config/zsh/.fzf.zsh ] && source ~/.config/zsh/.fzf.zsh 
+
+
+
