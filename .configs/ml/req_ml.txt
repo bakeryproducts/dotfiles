@@ -10,4 +10,6 @@ opencv-python
 torchsummary
 ranger-fm
 jupyterlab
-
+tensorboard
+yacs
+loguru
