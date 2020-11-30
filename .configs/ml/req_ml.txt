@@ -1,0 +1,13 @@
+numpy
+torch
+torchvision
+fastprogress
+matplotlib
+tqdm
+albumentations
+fire
+opencv-python
+torchsummary
+ranger-fm
+jupyterlab
+
