@@ -7,7 +7,7 @@ DISABLE_UPDATE_PROMPT="true"
 plugins=(git extract)
 HISTFILE=~/.config/zsh/.zsh_history
 source $ZSH/oh-my-zsh.sh
-KEYTIMEOUT=1
+KEYTIMEOUT=8
 
 
 # History
