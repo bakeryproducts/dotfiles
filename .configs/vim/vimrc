@@ -11,6 +11,8 @@ set number relativenumber
 set noswapfile
 set scrolloff=5
 set backspace=indent,eol,start
+set foldmethod=expr foldexpr=getline(v\:lnum)=~\'\\#*%%\'?\'>1\'\:\'=\' foldlevel=0
+
 
 " Pythonic stuff
 set tabstop=4
