@@ -1,5 +1,5 @@
 diff --git a/autoload/jupyter.vim b/autoload/jupyter.vim
-index ff9de49..f1c064d 100644
+index ff9de49..c8ea32e 100644
 --- a/autoload/jupyter.vim
 +++ b/autoload/jupyter.vim
 @@ -32,29 +32,24 @@ endfunction
@@ -50,3 +50,35 @@ index ff9de49..f1c064d 100644
  
      " Try running lines via python, which will set script variable
      try
+@@ -218,5 +213,18 @@ function! jupyter#UpdateEchom(timer) abort
+     Pythonx _jupyter_session.vim_client.timer_echom()
+ endfunction
+ 
++function! jupyter#SendVariable() abort
++    " Print the variable that is on the current line
++	normal! yiw
++	let variable_send = @0
++    JupyterSendCode ''.escape(variable_send, '"').''
++endfunction
++
++function! jupyter#SendTensor() abort
++    " Print the variable that is on the current line
++	normal! yiw
++	let variable_send = @0
++    JupyterSendCode ''.escape(variable_send, '"').'.shape'.','.''.escape(variable_send, '"').'.dtype'
++endfunction
+ "=============================================================================
+ "=============================================================================
+diff --git a/autoload/jupyter/load.vim b/autoload/jupyter/load.vim
+index 6ad9cbe..5871dab 100644
+--- a/autoload/jupyter/load.vim
++++ b/autoload/jupyter/load.vim
+@@ -14,6 +14,8 @@ function! jupyter#load#MakeStandardCommands() abort
+         \ JupyterTerminateKernel  call jupyter#TerminateKernel(<bang>0, <f-args>)
+     command! -buffer -nargs=* -complete=file
+         \ JupyterRunFile update | call jupyter#RunFile(<f-args>)
++    command! -buffer -nargs=0    JupyterSendVariable    call jupyter#SendVariable()
++    command! -buffer -nargs=0    JupyterSendTensor    call jupyter#SendTensor()
+ endfunction
+ 
+ 

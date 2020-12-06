@@ -72,11 +72,18 @@ let g:jupyter_mapkeys = 0
 nnoremap <silent> <c-j> :/# %%<CR> :noh<CR> :+1<CR>
 nnoremap <silent> <c-k> :?# %%<CR> :?# %%<CR> :noh<CR> :+1<CR>
 
-nnoremap <buffer> <silent> <s-f> :JupyterSendCell<CR>
-nnoremap <buffer> <silent> <s-w> :JupyterSendRange<CR>
+nnoremap <buffer> <silent> <c-f> :JupyterSendCell<CR>
+nnoremap <buffer> <silent> <c-w> :JupyterSendRange<CR>
 nnoremap <buffer> <silent> <leader>jj :JupyterRunFile<CR>
 nnoremap <buffer> <silent> <leader>jc :JupyterConnect<CR>
 vmap <buffer> <silent> <leader>e  <Plug>JupyterRunVisual
+
+nnoremap <buffer> <silent> <leader>je :JupyterSendCode 'clear'<CR>
+nnoremap <buffer> <silent> <leader>jR :JupyterSendCode '%reset -f'<CR>
+nnoremap <buffer> <silent> <leader>jp :JupyterSendVariable<CR>
+nnoremap <buffer> <silent> <leader>jP :JupyterSendTensor<CR>
+
+
 
 noremap  M "0p
 noremap  <c-m> "0P
