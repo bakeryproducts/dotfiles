@@ -36,6 +36,7 @@ set laststatus=2
 set cmdheight=2
 map Y y$
 set ttimeoutlen=50
+set updatetime=500
 
 call plug#begin('~/.config/vim/plugged')
 Plug 'scrooloose/nerdtree'
@@ -45,8 +46,13 @@ Plug 'tpope/vim-surround'
 Plug 'davidhalter/jedi-vim' 
 Plug 'jupyter-vim/jupyter-vim'
 Plug 'morhetz/gruvbox' 
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'airblade/vim-gitgutter'
 call plug#end()
 
+let g:jupyter_mapkeys = 0
+let g:gitgutter_close_preview_on_escape=1
 let g:airline_theme='gruvbox'
 autocmd FileType python setlocal completeopt-=preview
 
@@ -61,19 +67,25 @@ highlight SignColumn ctermbg=NONE guibg=NONE
 
 nnoremap ; :
 nnoremap : ;
-nmap <leader>h :bn<CR>
-nmap <leader>l :bp<CR>
-nmap <C-w> :bd<CR>
+nnoremap <leader>h :wincmd h<CR>
+nnoremap <leader>j :wincmd j<CR>
+nnoremap <leader>k :wincmd k<CR>
+nnoremap <leader>l :wincmd l<CR>
+nnoremap <leader>bl :bp<CR>
+nnoremap <leader>bh :bn<CR>
+nnoremap <leader>bw :bw<CR>
+
+nnoremap <C-p> :Files<CR>
 nnoremap <leader>z :noh<CR>
 nnoremap <leader>re :so ~/.config/vim/vimrc<CR>
 nnoremap <leader>rr :edit!<CR>
 
-let g:jupyter_mapkeys = 0
 nnoremap <silent> <c-j> :/# %%<CR> :noh<CR> :+1<CR>
 nnoremap <silent> <c-k> :?# %%<CR> :?# %%<CR> :noh<CR> :+1<CR>
 nnoremap <silent> <c-x> :?# %%<CR> 0d/# %%<CR> :noh<CR>
 
-nnoremap <buffer> <silent> <c-f> :JupyterSendCell<CR>
+nnoremap <buffer> <silent> <Tab> :JupyterSendCell<CR> :/# %%<CR> :noh<CR> :+1<CR>
+nnoremap <buffer> <silent> <s-Tab> :JupyterSendCell<CR>
 nnoremap <buffer> <silent> <c-g> :JupyterSendRange<CR>
 nnoremap <buffer> <silent> <leader>jj :JupyterRunFile<CR>
 nnoremap <buffer> <silent> <leader>jC :JupyterConnect<CR>
@@ -84,7 +96,7 @@ nnoremap <buffer> <silent> <leader>jR :JupyterSendCode '%reset -f'<CR>
 nnoremap <buffer> <silent> <leader>jv :JupyterSendVariable<CR>
 nnoremap <buffer> <silent> <leader>jt :JupyterSendTensor<CR>
 nnoremap <buffer> <silent> <leader>js :JupyterSendStats<CR>
-
+"nnoremap ghp <Plug>(GitGutterPreviewHunk) 
 noremap  M "0p
 
 autocmd InsertEnter,InsertLeave * set cul!
