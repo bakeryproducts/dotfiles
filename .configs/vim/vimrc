@@ -42,14 +42,13 @@ Plug 'scrooloose/nerdtree'
 Plug 'vim-airline/vim-airline'
 Plug 'jiangmiao/auto-pairs' 
 Plug 'tpope/vim-surround' 
-"Plug 'davidhalter/jedi-vim' 
+Plug 'davidhalter/jedi-vim' 
 Plug 'jupyter-vim/jupyter-vim'
 Plug 'morhetz/gruvbox' 
 call plug#end()
 
 let g:airline_theme='gruvbox'
-"let g:jedi#show_call_signatures = "2"
-"autocmd FileType python setlocal completeopt-=preview
+autocmd FileType python setlocal completeopt-=preview
 
 
 
@@ -67,6 +66,7 @@ nmap <leader>l :bp<CR>
 nmap <C-w> :bd<CR>
 nnoremap <leader>z :noh<CR>
 nnoremap <leader>re :so ~/.config/vim/vimrc<CR>
+nnoremap <leader>rr :edit!<CR>
 
 let g:jupyter_mapkeys = 0
 nnoremap <silent> <c-j> :/# %%<CR> :noh<CR> :+1<CR>
@@ -78,5 +78,7 @@ nnoremap <buffer> <silent> <leader>jj :JupyterRunFile<CR>
 nnoremap <buffer> <silent> <leader>jc :JupyterConnect<CR>
 vmap <buffer> <silent> <leader>e  <Plug>JupyterRunVisual
 
+noremap  M "0p
+noremap  <c-m> "0P
 
 autocmd InsertEnter,InsertLeave * set cul!
