@@ -67,10 +67,10 @@ highlight SignColumn ctermbg=NONE guibg=NONE
 
 nnoremap ; :
 nnoremap : ;
-nnoremap <leader>h :wincmd h<CR>
-nnoremap <leader>j :wincmd j<CR>
-nnoremap <leader>k :wincmd k<CR>
-nnoremap <leader>l :wincmd l<CR>
+nnoremap <leader>wh :wincmd h<CR>
+nnoremap <leader>wj :wincmd j<CR>
+nnoremap <leader>wk :wincmd k<CR>
+nnoremap <leader>wl :wincmd l<CR>
 nnoremap <leader>bl :bp<CR>
 nnoremap <leader>bh :bn<CR>
 nnoremap <leader>bw :bw<CR>
