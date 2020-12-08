@@ -1,0 +1,2 @@
+#!/bin/bash
+ipython kernel --ip=0.0.0.0  --profile-dir=~/.config/ipython/profile_gsm

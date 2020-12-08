@@ -80,10 +80,12 @@ nnoremap <leader>z :noh<CR>
 nnoremap <leader>re :so ~/.config/vim/vimrc<CR>
 nnoremap <leader>rr :edit!<CR>
 
+" -------------Jupyter vim ipython combo
 nnoremap <silent> <c-j> :/# %%<CR> :noh<CR> :+1<CR>
 nnoremap <silent> <c-k> :?# %%<CR> :?# %%<CR> :noh<CR> :+1<CR>
-nnoremap <silent> <leader>jx :?# %%<CR> 0d/# %%<CR> :noh<CR>
 
+nnoremap <silent> <leader>ji :!ipk
+nnoremap <silent> <leader>jx :?# %%<CR> 0d/# %%<CR> :noh<CR>
 nnoremap <buffer> <silent> <leader>jn o<CR># %%<ESC>:+1<CR>
 nnoremap <buffer> <silent> <leader>jd :JupyterCd $PWD<CR>
 
@@ -91,7 +93,8 @@ nnoremap <buffer> <silent> <Tab> :JupyterSendCell<CR> :/# %%<CR> :noh<CR> :+1<CR
 nnoremap <buffer> <silent> <s-Tab> :JupyterSendCell<CR>
 nnoremap <buffer> <silent> <c-g> :JupyterSendRange<CR>
 nnoremap <buffer> <silent> <leader>jj :JupyterRunFile<CR>
-nnoremap <buffer> <silent> <leader>jC :JupyterConnect<CR>
+nnoremap <buffer> <silent> <leader>jC :JupyterConnect ~/.config/ipython/profile_gsm/kernel-gsm.json<CR>
+nnoremap <buffer> <silent> <leader>jO :JupyterConnect<CR>
 vmap <buffer> <silent> <leader>jV  <Plug>JupyterRunVisual
 
 nnoremap <buffer> <silent> <leader>jc :JupyterSendCode 'clear'<CR>
@@ -99,7 +102,9 @@ nnoremap <buffer> <silent> <leader>jR :JupyterSendCode '%reset -f'<CR>
 nnoremap <buffer> <silent> <leader>jv :JupyterSendVariable<CR>
 nnoremap <buffer> <silent> <leader>jt :JupyterSendTensor<CR>
 nnoremap <buffer> <silent> <leader>js :JupyterSendStats<CR>
-"nnoremap ghp <Plug>(GitGutterPreviewHunk) 
+" -------------End
+
+
 noremap  M "0p
 
 autocmd InsertEnter,InsertLeave * set cul!
