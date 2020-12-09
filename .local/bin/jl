@@ -1,0 +1,2 @@
+#!/bin/bash
+cd ~ && screen -d -m jupyter-lab --port 9088 --no-browser --NotebookApp.token='' --NotebookApp.password=''
