@@ -50,8 +50,10 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-scripts/AutoComplPop'
+Plug 'easymotion/vim-easymotion'
 call plug#end()
 
+let g:EasyMotion_smartcase = 1
 let g:jedi#show_call_signatures = 2
 let g:jupyter_mapkeys = 0
 let g:gitgutter_close_preview_on_escape=1
@@ -103,6 +105,15 @@ nnoremap <buffer> <silent> <leader>jv :JupyterSendVariable<CR>
 nnoremap <buffer> <silent> <leader>jt :JupyterSendTensor<CR>
 nnoremap <buffer> <silent> <leader>js :JupyterSendStats<CR>
 " -------------End
+
+" ezmove
+map  <Leader>ww <Plug>(easymotion-bd-w)
+nmap <Leader>ww <Plug>(easymotion-overwin-w)
+nmap f <Plug>(easymotion-s2)
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
+map  n <Plug>(easymotion-next)
+map  N <Plug>(easymotion-prev)
 
 noremap  M "0p
 autocmd InsertEnter,InsertLeave * set cul!
