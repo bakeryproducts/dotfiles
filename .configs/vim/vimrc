@@ -9,7 +9,7 @@ let mapleader = ' '
 
 set number relativenumber
 set noswapfile
-set scrolloff=5
+set scrolloff=3
 set backspace=indent,eol,start
 set foldmethod=expr foldexpr=getline(v\:lnum)=~\'\\#\\s\\#\\s\'?\'>1\'\:\'=\' foldlevel=0
 
@@ -30,7 +30,7 @@ set hlsearch
 set ignorecase
 set smartcase
 
-set laststatus=2
+"set laststatus=2
 
 "set mouse=a
 set cmdheight=2
@@ -49,14 +49,14 @@ Plug 'morhetz/gruvbox'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-gitgutter'
+Plug 'vim-scripts/AutoComplPop'
 call plug#end()
 
+let g:jedi#show_call_signatures = 2
 let g:jupyter_mapkeys = 0
 let g:gitgutter_close_preview_on_escape=1
 let g:airline_theme='gruvbox'
 autocmd FileType python setlocal completeopt-=preview
-
-
 
 colorscheme gruvbox
 let g:gruvbox_transparent_bg = 1
@@ -104,7 +104,6 @@ nnoremap <buffer> <silent> <leader>jt :JupyterSendTensor<CR>
 nnoremap <buffer> <silent> <leader>js :JupyterSendStats<CR>
 " -------------End
 
-
 noremap  M "0p
-
 autocmd InsertEnter,InsertLeave * set cul!
+
