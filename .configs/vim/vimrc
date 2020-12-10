@@ -110,6 +110,7 @@ nnoremap <buffer> <silent> <leader>js :JupyterSendStats<CR>
 " ezmove
 map  <Leader>ww <Plug>(easymotion-bd-w)
 nmap <Leader>ww <Plug>(easymotion-overwin-w)
+nmap <leader>f <Plug>(easymotion-s2)
 map  / <Plug>(easymotion-sn)
 omap / <Plug>(easymotion-tn)
 map  n <Plug>(easymotion-next)
