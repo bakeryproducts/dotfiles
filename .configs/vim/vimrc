@@ -81,6 +81,7 @@ nnoremap <C-p> :Files<CR>
 nnoremap <leader>z :noh<CR>
 nnoremap <leader>re :so ~/.config/vim/vimrc<CR>
 nnoremap <leader>rr :edit!<CR>
+nnoremap <leader>rg :Rg   
 
 " -------------Jupyter vim ipython combo
 nnoremap <silent> <c-j> :/# %%<CR> :noh<CR> :+1<CR>
