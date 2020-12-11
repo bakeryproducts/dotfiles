@@ -23,15 +23,14 @@ set autoindent
 set fileformat=unix
 
 set hidden
-
 set wildmenu
 set hlsearch
-
 set ignorecase
 set smartcase
-
 "set laststatus=2
-
+"
+set undofile                " Save undos after file closes
+set undodir=/tmp" where to save undo histories
 "set mouse=a
 set cmdheight=2
 map Y y$
