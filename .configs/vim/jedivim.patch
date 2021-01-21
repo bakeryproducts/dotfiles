@@ -1,26 +1,26 @@
 diff --git a/autoload/jedi.vim b/autoload/jedi.vim
-index d21afec..08e010c 100644
+index 107e454..ae43bc4 100644
 --- a/autoload/jedi.vim
 +++ b/autoload/jedi.vim
-@@ -496,7 +496,7 @@ function! jedi#add_goto_window(for_usages, len) abort
+@@ -470,7 +470,7 @@ function! jedi#add_goto_window(for_usages, len) abort
  
      augroup jedi_goto_window
          if a:for_usages
 -            autocmd BufWinLeave <buffer> call jedi#clear_usages()
-+            autocmd WinLeave <buffer> q  | call jedi#clear_usages() " automatically leave, if an option is chosen
++            autocmd WinLeave <buffer> q  | call jedi#clear_usages()
          else
              autocmd WinLeave <buffer> q  " automatically leave, if an option is chosen
          endif
 diff --git a/pythonx/jedi_vim.py b/pythonx/jedi_vim.py
-index 918dba5..ef34d5d 100644
+index 70a524c..edaf198 100644
 --- a/pythonx/jedi_vim.py
 +++ b/pythonx/jedi_vim.py
-@@ -561,7 +561,7 @@ def clear_usages():
+@@ -605,7 +605,7 @@ def clear_usages():
                  'type': 'jediUsage',
                  'all': 1,
                  'bufnr': buf.number,
 -            })
-+            }, 1,len(buf))
++            }, 1, len(buf))
      else:
          # Unset current window only.
-         assert _current_definitions is None
+         assert _current_names is None
