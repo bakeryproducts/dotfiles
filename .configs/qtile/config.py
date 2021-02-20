@@ -56,8 +56,8 @@ def init_keys():
         # CUSTOM
         Key([mod], "v", lazy.spawn("shmulbuf"), desc='Shallow-run multibuffer'),
         Key([mod], "d", lazy.spawn("dmenu_run -p 'Run: '"), desc='Dmenu Run Launcher'),
-        Key([mod], "h", lazy.layout.grow(), lazy.layout.increase_nmaster(), desc='Expand master window'),
-        Key([mod], "l", lazy.layout.shrink(), lazy.layout.decrease_nmaster(), desc='Shrink master window'),
+        Key([mod], "l", lazy.layout.grow(), lazy.layout.increase_nmaster(), desc='Expand master window'),
+        Key([mod], "h", lazy.layout.shrink(), lazy.layout.decrease_nmaster(), desc='Shrink master window'),
         Key([mod], "r", lazy.layout.reset(), desc='normalize window size ratios'),
         Key([mod], "m", lazy.layout.maximize(), desc='maximizse window size ratios'),
         Key([mod], "f", lazy.window.toggle_fullscreen(), desc='toggle fullscreen'),
