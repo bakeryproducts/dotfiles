@@ -12,6 +12,7 @@ set noswapfile
 set scrolloff=3
 set backspace=indent,eol,start
 set foldmethod=expr foldexpr=getline(v\:lnum)=~\'\\#\\s\\#\\s\'?\'>1\'\:\'=\' foldlevel=0
+set clipboard=unnamedplus
 
 
 " Pythonic stuff
