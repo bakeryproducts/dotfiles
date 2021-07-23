@@ -111,4 +111,5 @@ eval "$(fasd --init posix-alias zsh-hook)"
 [ -f ~/.config/zsh/.fzf.zsh ] && source ~/.config/zsh/.fzf.zsh 
 
 
-
+#export PATH=/home/ubuntu/cmake-3.8.2/bin
+export PATH="/usr/local/cuda-11.1/bin/:$PATH"
