@@ -1,0 +1,7 @@
+#!/bin/bash
+ssh $DB5USER@$DB5HOST -L 9000:localhost:9000 -N & \
+sleep 1 && ssh $DB7USER@$DB7HOST -L 8000:localhost:9000 -N & \
+sleep 1 && ssh -p 9000 gsm@localhost -L 9088:localhost:9088 -N & \
+sleep 1 && ssh -p 9000 gsm@localhost -L 9006:localhost:9006 -N & \
+sleep 2 && ssh -p 8000 gsm@localhost -L 8088:localhost:9088 -N & \
+sleep 3 && ssh -p 8000 gsm@localhost -L 8006:localhost:9006 -N 

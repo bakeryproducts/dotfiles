@@ -16,3 +16,9 @@ yacs
 loguru
 ipywidgets
 jupytext
+hydra-core
+omegaconf
+scikit-learn
+pandas
+timm
+

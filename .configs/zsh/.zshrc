@@ -90,6 +90,7 @@ alias ohmyzsh="vim ~/.oh-my-zsh"
 
 export MYVIMRC="~/.config/vim/vimrc"
 export VIMINIT=":set runtimepath+=~/.config/vim|:source $MYVIMRC"
+export KAGGLE_CONFIG_DIR="~/.config/kaggle/"
 
 
 if [ -d "$HOME/.local/bin" ] ; then
