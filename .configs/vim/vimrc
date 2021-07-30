@@ -81,7 +81,7 @@ nnoremap <leader>wk :wincmd k<CR>
 nnoremap <leader>wl :wincmd l<CR>
 nnoremap <leader>l :bp<CR>
 nnoremap <leader>h :bn<CR>
-nnoremap <leader>w :bw<CR>
+nnoremap <leader>bw :bw<CR>
 nnoremap <leader>p :buffers<CR>:buffer<Space>
 
 nnoremap <C-p> :Files<CR>
