@@ -119,3 +119,5 @@ map  N <Plug>(easymotion-prev)
 noremap  M "0p
 autocmd InsertEnter,InsertLeave * set cul!
 
+nnoremap cn *``cgn
+nnoremap cN *``cgN
