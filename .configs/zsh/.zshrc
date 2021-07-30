@@ -90,6 +90,7 @@ alias ohmyzsh="vim ~/.oh-my-zsh"
 
 export MYVIMRC="~/.config/vim/vimrc"
 export VIMINIT=":set runtimepath+=~/.config/vim|:source $MYVIMRC"
+export KAGGLE_CONFIG_DIR="~/.config/kaggle/"
 
 
 if [ -d "$HOME/.local/bin" ] ; then
@@ -111,4 +112,5 @@ eval "$(fasd --init posix-alias zsh-hook)"
 [ -f ~/.config/zsh/.fzf.zsh ] && source ~/.config/zsh/.fzf.zsh 
 
 
-
+#export PATH=/home/ubuntu/cmake-3.8.2/bin
+export PATH="/usr/local/cuda-11.1/bin/:$PATH"

@@ -14,7 +14,6 @@ set backspace=indent,eol,start
 set foldmethod=expr foldexpr=getline(v\:lnum)=~\'\\#\\s\\#\\s\'?\'>1\'\:\'=\' foldlevel=0
 set clipboard=unnamedplus
 
-
 " Pythonic stuff
 set tabstop=4
 set expandtab
@@ -40,11 +39,11 @@ set updatetime=500
 
 call plug#begin('~/.config/vim/plugged')
 Plug 'scrooloose/nerdtree'
+Plug 'vim-airline/vim-pairs' 
 Plug 'vim-airline/vim-airline'
-Plug 'jiangmiao/auto-pairs' 
-Plug 'tpope/vim-surround' 
+"Plug 'tpope/vim-surround' 
 Plug 'davidhalter/jedi-vim' 
-Plug 'jupyter-vim/jupyter-vim'
+"Plug 'jupyter-vim/jupyter-vim'
 Plug 'morhetz/gruvbox' 
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
@@ -54,7 +53,7 @@ Plug 'easymotion/vim-easymotion'
 call plug#end()
 
 let g:EasyMotion_smartcase = 1
-let g:jedi#show_call_signatures = 2
+let g:jedi#show_call_signatures = 1
 let g:jupyter_mapkeys = 0
 let g:gitgutter_close_preview_on_escape=1
 let g:airline_theme='gruvbox'
@@ -67,15 +66,23 @@ highlight Normal     ctermbg=NONE guibg=NONE
 highlight LineNr     ctermbg=NONE guibg=NONE
 highlight SignColumn ctermbg=NONE guibg=NONE
 
+" unmapping
+" cant find a way for plugin maps, remap for now
+map <leader>gsh <Plug>(GitGutterStageHunk)
+map <leader>gsu <Plug>(GitGutterUndoHunk)
+map <leader>gsp <Plug>(GitGutterPreviewHunk)
+"
+
 nnoremap ; :
 nnoremap : ;
 nnoremap <leader>wh :wincmd h<CR>
 nnoremap <leader>wj :wincmd j<CR>
 nnoremap <leader>wk :wincmd k<CR>
 nnoremap <leader>wl :wincmd l<CR>
-nnoremap <leader>bl :bp<CR>
-nnoremap <leader>bh :bn<CR>
-nnoremap <leader>bw :bw<CR>
+nnoremap <leader>l :bp<CR>
+nnoremap <leader>h :bn<CR>
+nnoremap <leader>w :bw<CR>
+nnoremap <leader>p :buffers<CR>:buffer<Space>
 
 nnoremap <C-p> :Files<CR>
 nnoremap <leader>z :noh<CR>
@@ -83,28 +90,6 @@ nnoremap <leader>re :so ~/.config/vim/vimrc<CR>
 nnoremap <leader>rr :edit!<CR>
 nnoremap <leader>rg :Rg   
 
-" -------------Jupyter vim ipython combo
-nnoremap <silent> <c-j> :/# %%<CR> :noh<CR> :+1<CR>
-nnoremap <silent> <c-k> :?# %%<CR> :?# %%<CR> :noh<CR> :+1<CR>
-
-nnoremap <silent> <leader>ji :!ipk & <CR>
-nnoremap <silent> <leader>jx :?# %%<CR> 0d/# %%<CR> :noh<CR>
-nnoremap <buffer> <silent> <leader>jn o<CR># %%<ESC>:+1<CR>
-nnoremap <buffer> <silent> <leader>jd :JupyterCd $PWD<CR>
-
-nnoremap <buffer> <silent> <Tab> :JupyterSendCell<CR> :/# %%<CR> :noh<CR> :+1<CR>
-nnoremap <buffer> <silent> <s-Tab> :JupyterSendCell<CR>
-nnoremap <buffer> <silent> <c-g> :JupyterSendRange<CR>
-nnoremap <buffer> <silent> <leader>jj :JupyterRunFile<CR>
-"nnoremap <buffer> <silent> <leader>jC :JupyterConnect ~/.config/ipython/profile_gsm/kernel-gsm.json<CR>
-nnoremap <buffer> <silent> <leader>jO :JupyterConnect<CR>
-vmap <buffer> <silent> <leader>jV  <Plug>JupyterRunVisual
-
-nnoremap <buffer> <silent> <leader>jc :JupyterSendCode 'clear'<CR>
-nnoremap <buffer> <silent> <leader>jR :JupyterSendCode '%reset -f'<CR>
-nnoremap <buffer> <silent> <leader>jv :JupyterSendVariable<CR>
-nnoremap <buffer> <silent> <leader>jt :JupyterSendTensor<CR>
-nnoremap <buffer> <silent> <leader>js :JupyterSendStats<CR>
 " -------------End
 
 " ezmove
