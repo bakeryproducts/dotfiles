@@ -1,0 +1,3 @@
+#!/bin/bash
+echo $PWD
+ln -s $PWD/../.configs/pycodestyle ~/.config/pycodestyle
