@@ -1,5 +1,10 @@
 [user]
-	email = $GITMAIL 
-	name = $GITUSER 
+	email = gleb.m.sokolov@gmail.com
+	name = bakeryproducts
 [credential]
     helper = store
+[filter "nbstripout"]
+	clean = \"/usr/bin/python3\" -m nbstripout
+	smudge = cat
+[diff "ipynb"]
+	textconv = \"/usr/bin/python3\" -m nbstripout -t
