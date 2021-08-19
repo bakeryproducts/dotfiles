@@ -35,7 +35,7 @@ URxvt.transparent: true
 URxvt.shading:15
 URxvt.foreground: #eeeeee
 
-URxvt.font: xft:Iosevka:style=Regular:pixelsize=18
+URxvt.font: xft:Iosevka:style=Regular:pixelsize=20
 !URxvt.boldFont: xft:Iosevka:style=Bold:pixelsize=18
 !URxvt.italicFont: xft:Iosevka:style=Italic:pixelsize=18
 URxvt.letterSpace: -1
