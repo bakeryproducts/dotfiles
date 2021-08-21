@@ -118,3 +118,4 @@ cmd remove ${{
 map d
 map dD delete
 #map dD push :remove
+set dircounts
