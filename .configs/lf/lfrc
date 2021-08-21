@@ -116,6 +116,7 @@ cmd remove ${{
     fi
 }}
 map d
+map dd cut
 map dD delete
 #map dD push :remove
 set dircounts
