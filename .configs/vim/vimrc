@@ -27,7 +27,6 @@ set fileformat=unix
 
 set hidden
 set wildmenu
-set hlsearch
 set ignorecase
 set smartcase
 "set laststatus=2
