@@ -107,7 +107,7 @@ end
 EOF
 
 
-"lua require('lspconfig').pylsp.setup{ on_attach=require'completion'.on_attach}
+lua require('lspconfig').pylsp.setup{ on_attach=require'completion'.on_attach}
 let asyncomplete_auto_completeopt = 0
 set completeopt=menuone,noinsert,noselect
 
