@@ -12,7 +12,7 @@ alias sai='sudo apt install'
 alias sau='sudo apt update'
 alias restart='sudo shutdown -r now'
 alias vpni='sudo -E openconnect $VPN_SERVER:$VPN_PORT -u $VPN_USER --passwd-on-stdin <<<$VPN_PASS --servercert $VPN_CERT'
-#alias vpni='sudo -E openconnect $VPN_SERVER:$VPN_PORT -u $VPN_USER --passwd-on-stdin <<<$VPN_PASS'
+alias dpa='docker ps -a'
 
 zx()
 {
