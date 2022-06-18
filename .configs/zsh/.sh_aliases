@@ -12,6 +12,7 @@ alias sai='sudo apt install'
 alias sau='sudo apt update'
 alias restart='sudo shutdown -r now'
 alias vpni='sudo -E openconnect $VPN_SERVER:$VPN_PORT -u $VPN_USER --passwd-on-stdin <<<$VPN_PASS --servercert $VPN_CERT'
+alias dpa='docker ps -a'
 
 zx()
 {
@@ -19,6 +20,7 @@ cd `fasd_cd -R | fzf | awk '{print $2}'`
 }
 
 alias gg='watch -d -n 0.5 nvidia-smi --query-gpu=utilization.gpu,memory.free,memory.used --format=csv'
+alias ggf='nvitop'
 
 #si()
 #{

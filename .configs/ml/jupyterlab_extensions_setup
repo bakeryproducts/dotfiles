@@ -5,6 +5,4 @@ jupyter labextension install @axlair/jupyterlab_vim  --no-build
 jupyter labextension install jupyterlab-vimrc  --no-build 
 jupyter labextension install jupyterlab_vim-system-clipboard-support  --no-build 
 jupyter lab build
-jupyter nbextension enable --py widgetsnbextension
-jupyter serverextension enable jupytext
 set NODE_OPTIONS=
