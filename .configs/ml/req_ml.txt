@@ -1,6 +1,7 @@
-six==1.12.0
 numpy
+pandas
 torch
+shapely
 torchvision
 fastprogress
 matplotlib
@@ -14,11 +15,5 @@ jupyterlab
 tensorboard
 yacs
 loguru
-ipywidgets
-jupytext
 hydra-core
-omegaconf
-scikit-learn
-pandas
-timm
-
+git+https://github.com/rwightman/pytorch-image-models.git
