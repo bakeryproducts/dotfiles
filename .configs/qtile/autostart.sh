@@ -1,5 +1,5 @@
 #!/bin/bash
-picom & 
+picom -f & 
 nitrogen --set-zoom-fill ~/Downloads/wp.jpg
 xrdb ~/.config/xs/.Xresources
 setxkbmap -option caps:escape 

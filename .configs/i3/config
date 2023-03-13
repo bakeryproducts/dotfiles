@@ -1,0 +1,176 @@
+# set modifier
+set $super Mod4
+set $alt Mod1
+
+# set font
+font pango: Noto Sans 8
+
+# Use Mouse+$super to drag floating windows to their wanted position
+floating_modifier $alt
+
+#autostart
+exec ~/Documents/dotfiles/.configs/autostart.sh
+exec i3-layouts
+# exec --no-startup-id hsetroot -center ~/.wallpaper.png
+# exec --no-startup-id xsettingsd &
+# exec --no-startup-id compton -b
+
+# start a terminal
+bindsym $alt+space exec alacritty
+
+# start dmenu (a program launcher)
+# bindsym $super+Shift+d exec i3-dmenu-desktop --dmenu="dmenu -i -fn 'Noto Sans:size=8'"
+bindsym $alt+d exec dmenu_run -p "Run: "
+
+# common apps keybinds
+# bindsym Print exec scrot 'Cheese_%a-%d%b%y_%H.%M.png' -e 'viewnior ~/$f'
+# bindsym $super+l exec i3lock -i ~/.wallpaper.png
+# bindsym $super+Shift+w exec firefox
+# bindsym $super+Shift+f exec thunar;workspace 3;focus
+# bindsym $super+Shift+g exec geany
+
+# Key([], "XF86MonBrightnessUp", lazy.spawn("light -A 3"), desc=''),
+# Key([], "XF86MonBrightnessDown", lazy.spawn("light -U 3"), desc=''),
+# Key([], "XF86AudioRaiseVolume", lazy.spawn("pactl set-sink-volume 0 +5%"), desc=''),
+# Key([], "XF86AudioLowerVolume", lazy.spawn("pactl set-sink-volume 0 -5%"), desc=''),
+
+#change volume
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +5% 
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 -5%
+bindsym XF86MonBrightnessUp  exec light -A 3
+bindsym XF86MonBrightnessDown exec light -U 3
+
+# music control
+# bindsym XF86AudioNext exec mpc next
+# bindsym XF86AudioPrev exec mpc prev
+# bindsym XF86AudioPlay exec mpc toggle
+# bindsym XF86AudioStop exec mpc stop
+
+# kill focused window
+bindsym $alt+q kill
+# bindsym $alt+F4 kill
+
+# change focus
+bindsym $alt+h focus left
+bindsym $alt+j focus down
+bindsym $alt+k focus up
+bindsym $alt+l focus right
+
+# move focused window
+bindsym $alt+Shift+h move left
+bindsym $alt+Shift+j move down
+bindsym $alt+Shift+k move up
+bindsym $alt+Shift+l move right
+
+# split in horizontal orientation
+bindsym $alt+c split h
+
+# split in vertical orientation
+bindsym $alt+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $alt+f fullscreen toggle
+
+# change container layout split
+bindsym $alt+s layout toggle split
+
+# toggle tiling / floating
+bindsym $alt+t floating toggle
+
+# change focus between tiling / floating windows
+bindsym $alt+Shift+space focus mode_toggle
+
+# switch to workspace
+bindsym $alt+Control+l workspace next
+bindsym $alt+Control+h workspace prev
+bindsym $alt+1 workspace 1
+bindsym $alt+2 workspace 2
+bindsym $alt+3 workspace 3
+bindsym $alt+4 workspace 4
+bindsym $alt+5 workspace 5
+bindsym $alt+6 workspace 6
+bindsym $alt+7 workspace 7
+bindsym $alt+8 workspace 8
+bindsym $alt+9 workspace 9
+bindsym $alt+0 workspace 0
+
+set $i3l vstack 0.6 to workspace 1
+set $i3l vstack 0.6 to workspace 2
+set $i3l vstack 0.6 to workspace 3
+set $i3l vstack 0.6 to workspace 4
+set $i3l vstack 0.6 to workspace 5
+set $i3l vstack 0.6 to workspace 6
+set $i3l vstack 0.6 to workspace 7
+set $i3l vstack 0.6 to workspace 8
+set $i3l vstack 0.6 to workspace 9
+set $i3l vstack 0.6 to workspace 0
+
+# move focused container to workspace
+bindsym $alt+Shift+1 move container to workspace 1
+bindsym $alt+Shift+2 move container to workspace 2
+bindsym $alt+Shift+3 move container to workspace 3
+bindsym $alt+Shift+4 move container to workspace 4
+bindsym $alt+Shift+5 move container to workspace 5
+bindsym $alt+Shift+6 move container to workspace 6
+bindsym $alt+Shift+7 move container to workspace 7
+bindsym $alt+Shift+8 move container to workspace 8
+bindsym $alt+Shift+9 move container to workspace 9
+bindsym $alt+Shift+0 move container to workspace 0
+
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $alt+Shift+r restart
+
+# exit i3
+# bindsym $super+q exec "i3-nagbar -t warning -m 'Really, exit?' -b 'Yes' 'i3-msg exit'"
+
+# resize window (you can also use the mouse for that)
+bindsym $super+Shift+l resize shrink width 5 px or 5 ppt
+bindsym $super+Shift+k resize grow height 5 px or 5 ppt
+bindsym $super+Shift+j resize shrink height 5 px or 5 ppt
+bindsym $super+Shift+h resize grow width 5 px or 5 ppt
+
+# mode "resize" {
+#         bindsym Left resize shrink width 5 px or 5 ppt
+#         bindsym Down resize grow height 5 px or 5 ppt
+#         bindsym Up resize shrink height 5 px or 5 ppt
+#         bindsym Right resize grow width 5 px or 5 ppt
+#         bindsym Return mode "default"
+# }
+# bindsym $super+r mode "resize"
+
+# panel
+bar {
+        colors {
+        background #2f343f
+        statusline #2f343f
+        separator #4b5262
+
+        # colour of border, background, and text
+        focused_workspace       #2f343f #bf616a #d8dee8
+        active_workspace        #2f343f #2f343f #d8dee8
+        inactive_workspace      #2f343f #2f343f #d8dee8
+        urgent_workspacei       #2f343f #ebcb8b #2f343f
+        }
+        status_command i3status
+}
+
+# window rules, you can find the window class using xprop
+for_window [class=".*"] border pixel 2
+# assign [class=URxvt] 1
+# assign [class=Firefox|Transmission-gtk] 2
+# assign [class=Thunar|File-roller] 3
+# assign [class=Geany|Evince|Gucharmap|Soffice|libreoffice*] 4
+# assign [class=Audacity|Vlc|mpv|Ghb|Xfburn|Gimp*|Inkscape] 5
+# assign [class=Lxappearance|System-config-printer.py|Lxtask|GParted|Pavucontrol|Exo-helper*|Lxrandr|Arandr] 6
+# for_window [class=Viewnior|feh|Audacious|File-roller|Lxappearance|Lxtask|Pavucontrol] floating enable
+# for_window [class=URxvt|Firefox|Geany|Evince|Soffice|libreoffice*|mpv|Ghb|Xfburn|Gimp*|Inkscape|Vlc|Lxappearance|Audacity] focus
+# for_window [class=Xfburn|GParted|System-config-printer.py|Lxtask|Pavucontrol|Exo-helper*|Lxrandr|Arandr] focus
+
+# colour of border, background, text, indicator, and child_border
+client.focused              #bf616a #2f343f #d8dee8 #bf616a #d8dee8
+client.focused_inactive     #2f343f #2f343f #d8dee8 #2f343f #2f343f
+client.unfocused            #2f343f #2f343f #d8dee8 #2f343f #2f343f
+client.urgent               #2f343f #2f343f #d8dee8 #2f343f #2f343f
+client.placeholder          #2f343f #2f343f #d8dee8 #2f343f #2f343f
+client.background           #2f343f
+
