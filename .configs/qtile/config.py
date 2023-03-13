@@ -14,17 +14,21 @@ def stick_win(qtile):
     global win_list
     win_list.append(qtile.current_window)
 
+
 def unstick_win(qtile):
     global win_list
     if qtile.current_window in win_list:
         win_list.remove(qtile.current_window)
+
 
 @hook.subscribe.setgroup
 def move_win():
     for w in win_list:
         w.togroup(qtile.current_group.name)
 
-def float_to_front(qtile):
+
+@hook.subscribe.group_window_add
+def float_to_front(*args, **kwargs):
     """
     Bring all floating windows of the group to front
     """
@@ -38,7 +42,7 @@ terminal = "alacritty"#guess_terminal()
 border_focus = '#E6C229'
 
 keys = [
-  
+
     Key([mod], "o", lazy.function(stick_win), desc="stick win"),
     Key([mod, "shift"], "o", lazy.function(unstick_win), desc="unstick win"),
     Key([mod, "shift"], "f", lazy.function(float_to_front), desc="floating win to front"),
@@ -127,7 +131,13 @@ for i in groups:
 
 layouts = [
     # layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=4),
-    layout.MonadTall(new_client_position='after_current', border_focus=border_focus, border_width=1, margin=0, ratio=.6),
+    layout.MonadTall(new_client_position='after_current',
+                     border_focus=border_focus,
+                     border_width=1,
+                     margin=0,
+                     ratio=.6,
+                     single_border_width=0,
+                     ),
     # layout.Max(),
     # Try more layouts by unleashing below layouts.
     # layout.Stack(num_stacks=2),
