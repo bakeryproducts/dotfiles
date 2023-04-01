@@ -31,7 +31,16 @@ lvim.leader = "space"
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["<C-l>"] = ":bnext<cr>"
 lvim.keys.normal_mode["<C-h>"] = ":bprev<cr>"
+lvim.keys.normal_mode["<C-w>"] = ":bd<cr>"
 
+lvim.keys.normal_mode["<C-1>"] = ":lua require(\"harpoon.ui\").nav_file(1)<cr>"
+lvim.keys.normal_mode["<C-2>"] = ":lua require(\"harpoon.ui\").nav_file(2)<cr>"
+lvim.keys.normal_mode["<C-`>"] = ":lua require(\"harpoon.mark\").add_file()<cr>"
+lvim.keys.normal_mode["<C-0>"] = ":lua require(\"harpoon.ui\").toggle_quick_menu()<cr>"
+-- :lua require("harpoon.ui").toggle_quick_menu()
+-- nnoremap <silent><C-l> :lua require("harpoon.ui").nav_file(3)<CR>
+-- nnoremap <silent><C-ø> :lua require("harpoon.ui").nav_file(4)<CR>
+--
 -- lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 -- lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
 
@@ -105,6 +114,7 @@ lvim.builtin.treesitter.auto_install = true
 -- -- Additional Plugins <https://www.lunarvim.org/docs/plugins#user-plugins>
 lvim.plugins = {
   { "ellisonleao/gruvbox.nvim" },
+  { "ThePrimeagen/harpoon" },
   -- { "sbdchd/neoformat" },
   -- "folke/trouble.nvim",
   -- cmd = "TroubleToggle",
