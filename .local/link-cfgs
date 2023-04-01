@@ -2,4 +2,4 @@
 echo $PWD
 ln -s $PWD/../.configs/pycodestyle ~/.config/pycodestyle
 ln -s $PWD/../.configs/lf/lfrc ~/.config/lf/lfrc
-ln -s -f $PWD/../.configs/lvim ~/.config/lvim
+ln -s $PWD/../.configs/lvim ~/.config/lvim
