@@ -9,6 +9,7 @@
 lvim.plugins = {
   { "ellisonleao/gruvbox.nvim" },
   { "ThePrimeagen/harpoon" },
+  { "Exafunction/codeium.vim" },
   -- { "sbdchd/neoformat" },
   -- "folke/trouble.nvim",
   -- cmd = "TroubleToggle",
