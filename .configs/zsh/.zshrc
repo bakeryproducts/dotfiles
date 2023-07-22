@@ -97,6 +97,10 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
+if [ -d "$HOME/.cargo/bin" ] ; then
+    PATH="$HOME/.cargo/bin:$PATH"
+fi
+
 if [ -f ~/.sec_glebash ]; then
     . ~/.sec_glebash
     git config --global user.name "$GITUSER"
@@ -105,6 +109,10 @@ fi
 
 if [ -f ~/.config/zsh/.sh_aliases ]; then
     . ~/.config/zsh/.sh_aliases
+fi
+
+if [ -f ~/.config/zsh/.paws ]; then
+    . ~/.config/zsh/.paws
 fi
 
 #eval "$(fasd --init auto)"
