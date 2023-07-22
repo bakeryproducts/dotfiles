@@ -7,6 +7,8 @@ from loguru import logger
 from pathlib import Path
 from subprocess import check_output
 
+import fire
+
 
 @dataclass
 class AwsInstance:
@@ -14,6 +16,8 @@ class AwsInstance:
     PublicIpAddress: str
     PublicDnsName: str
     InstanceType: str
+    State: str
+
 
 @dataclass
 class Cfg:
@@ -45,12 +49,14 @@ def get_info(data):
         pub_ip = v.get('PublicIpAddress', None)
         pub_name = v.get('PublicDnsName', None)
         inst_type = v.get('InstanceType', None)
+        state = v.get('State',{}).get('Name', None)
         #KeyName, LaunchTime
         
         ai = AwsInstance(InstanceId=iid,
                          InstanceType=inst_type,
                          PublicIpAddress=pub_ip,
                          PublicDnsName=pub_name,
+                         State=state,
                         )
         instances.append(ai)
     
@@ -61,35 +67,63 @@ def set_env(path, inst, idx=1):
     s = f"""
     export PAWS_{idx}_NAME={str(inst.PublicDnsName)}
     export PAWS_{idx}_IP={str(inst.PublicIpAddress)}
-    
     """
     with open(path, 'w') as f:
         f.write(s)
-        
-    
-def main(iid=None):
+
+
+def test(show=False):
+    print(show)
+
+
+def start(iid=None, dry=False):
+    if iid is None:
+        iid = '$PAWS_IID'
+    cmd = f'aws ec2 start-instances --instance-ids {iid}'
+    if dry:
+        cmd += ' --dry-run'
+    logger.debug(cmd)
+    r = check_output(cmd, shell=True)
+    logger.info(r)
+
+
+def stop(iid=None, force=False):
+    if iid is None:
+        iid = '$PAWS_IID'
+    cmd = f'aws ec2 stop-instances --instance-ids {iid}'
+    if not force:
+        cmd += ' --dry-run'
+    logger.debug(cmd)
+    r = check_output(cmd, shell=True)
+    logger.info(r)
+
+
+def set(iid=None):
     c = Cfg()
     if iid is not None: c.iid = iid
     logger.debug(c.iid)
-    
-    rawdata = get_status()
-    yamldata = parse_status(rawdata)['Reservations']
-    
-    instances = get_info(yamldata)
-    [logger.debug(i) for i in instances]
-    
+    instances = check(get_vals=True)
+
     inst = [i for i in instances if i.InstanceId == c.iid]
     inst = inst[0] if inst else None
-    #inst
-    
+
     if inst is not None:
         set_env(c.env_path, inst)
         logger.info(inst)
     else:
         logger.error(f'No instance {c.iid}!')
     return
-    
+
+
+def check(get_vals=False):
+    rawdata = get_status()
+    yamldata = parse_status(rawdata)['Reservations']
+    instances = get_info(yamldata)
+    [logger.debug(i) for i in instances]
+
+    if get_vals:
+        return instances
 
 
 if __name__ == '__main__':
-    main()
+    fire.Fire()
