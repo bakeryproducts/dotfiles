@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+
+import os
+import yaml
+from dataclasses import dataclass
+from loguru import logger
+from pathlib import Path
+from subprocess import check_output
+
+
+@dataclass
+class AwsInstance:
+    InstanceId: str
+    PublicIpAddress: str
+    PublicDnsName: str
+    InstanceType: str
+
+@dataclass
+class Cfg:
+    iid=os.environ.get('PAWS_IID', None)
+    temp='/tmp/_aws_tmp.yaml'
+    env_path=Path.home() / '.config/zsh/.paws'
+
+def get_status():
+    r = check_output('aws ec2 describe-instances', shell=True)
+    return r
+
+def parse_status(data):
+    try:
+        data = yaml.safe_load(data)
+    except yaml.YAMLError as exc:
+        print(exc)
+        data = None
+    return data
+
+
+def get_info(data):
+    instances = []
+    for r in data:
+        v = r['Instances']
+        assert len(v) == 1
+        v = v[0]
+        iid = v['InstanceId']
+
+        pub_ip = v.get('PublicIpAddress', None)
+        pub_name = v.get('PublicDnsName', None)
+        inst_type = v.get('InstanceType', None)
+        #KeyName, LaunchTime
+        
+        ai = AwsInstance(InstanceId=iid,
+                         InstanceType=inst_type,
+                         PublicIpAddress=pub_ip,
+                         PublicDnsName=pub_name,
+                        )
+        instances.append(ai)
+    
+    return instances
+
+
+def set_env(path, inst, idx=1):
+    s = f"""
+    export PAWS_{idx}_NAME={str(inst.PublicDnsName)}
+    export PAWS_{idx}_IP={str(inst.PublicIpAddress)}
+    
+    """
+    with open(path, 'w') as f:
+        f.write(s)
+        
+    
+def main(iid=None):
+    c = Cfg()
+    if iid is not None: c.iid = iid
+    logger.debug(c.iid)
+    
+    rawdata = get_status()
+    yamldata = parse_status(rawdata)['Reservations']
+    
+    instances = get_info(yamldata)
+    [logger.debug(i) for i in instances]
+    
+    inst = [i for i in instances if i.InstanceId == c.iid]
+    inst = inst[0] if inst else None
+    #inst
+    
+    if inst is not None:
+        set_env(c.env_path, inst)
+        logger.info(inst)
+    else:
+        logger.error(f'No instance {c.iid}!')
+    return
+    
+
+
+if __name__ == '__main__':
+    main()

@@ -4,15 +4,14 @@ alias ls='ls --color=auto'
 alias ll='ls -alFh'
 alias la='ls -A'
 alias l='ls -CF'
-alias si='ssh $DB7USER@$DB7HOST'
 alias sj='ssh $DB5USER@$DB5HOST'
 alias sjj='ssh -p 9000 gsm@localhost'
-alias sii='ssh -p 8000 gsm@localhost'
 alias sai='sudo apt install'
 alias sau='sudo apt update'
 alias restart='sudo shutdown -r now'
 alias vpni='sudo -E openconnect $VPN_SERVER:$VPN_PORT -u $VPN_USER --passwd-on-stdin <<<$VPN_PASS --servercert $VPN_CERT'
 alias dpa='docker ps -a'
+alias pw1='ssh -i ~/.ssh/paws1.pem $PAWS_USER@$PAWS_1_NAME'
 
 zx()
 {
