@@ -125,5 +125,24 @@ def check(get_vals=False):
         return instances
 
 
+def switch(itype, iid=None, dry=False):
+    """
+        itype:
+        https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html
+        t2.micro, t3.micro, g4dn.xlarge
+    """
+    defaults = dict(cpu='t2.micro',
+                    gpu='g4dn.xlarge')
+    itype = defaults.get(itype, itype)
+
+    if iid is None: iid = '$PAWS_IID'
+    cmd = f'aws ec2 modify-instance-attribute --instance-id {iid} --instance-type {itype}'
+    if dry: cmd += ' --dry-run'
+    logger.debug(cmd)
+    r = check_output(cmd, shell=True)
+    logger.info(r)
+
+
+
 if __name__ == '__main__':
     fire.Fire()
