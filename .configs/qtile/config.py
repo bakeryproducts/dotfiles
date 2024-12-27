@@ -87,6 +87,11 @@ keys = [
     Key([], "XF86MonBrightnessDown", lazy.spawn("light -U 3"), desc=''),
     Key([], "XF86AudioRaiseVolume", lazy.spawn("pactl set-sink-volume 0 +5%"), desc=''),
     Key([], "XF86AudioLowerVolume", lazy.spawn("pactl set-sink-volume 0 -5%"), desc=''),
+    Key([], "XF86AudioPrev", lazy.spawn("wvcr"), desc='stt-tool'),
+    Key([], "XF86AudioPlay", lazy.spawn("wvcr answer"), desc=''),
+    Key([], "XF86AudioNext", lazy.spawn("wvcr explain"), desc=''),
+    Key([], "XF86Search", lazy.spawn("wvcr voiceover"), desc=''),
+
 
     Key(
         [mod, "shift"],
