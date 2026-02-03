@@ -1,8 +1,6 @@
 #!/bin/bash
 echo $PWD
-ln -s $PWD/../.configs/pycodestyle ~/.config/pycodestyle
 ln -s $PWD/../.configs/lf/lfrc ~/.config/lf/lfrc
-ln -s $PWD/../.configs/lvim ~/.config/lvim
 ln -s $PWD/../.configs/zsh ~/.config/zsh
 ln -s $PWD/../.configs/vim ~/.config/vim
 ln -s $PWD/../.configs/git ~/.config/git

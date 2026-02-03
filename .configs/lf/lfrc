@@ -41,6 +41,7 @@ cmd open ${{
         text/*) $EDITOR $fx;;
         text/*|application/json) $EDITOR $fx;;
         text/*|application/jsonl) $EDITOR $fx;;
+        image/*) for f in $fx; do setsid feh $f > /dev/null 2> /dev/null & done;;
         *) for f in $fx; do setsid $OPENER $f > /dev/null 2> /dev/null & done;;
     esac
 }}
@@ -117,8 +118,15 @@ cmd remove ${{
         [ $ans = 'y' ] && (echo 'deleting files...' && rm -fr $fs) || (echo 'cancelled...')
     fi
 }}
+# yank path to clipboard
+cmd yank-path ${{
+    printf "$fx" | wl-copy
+    # lf -remote "send $id echo 'Yanked path(s) to clipboard'"
+}}
 map d
 map dd cut
 map dD delete
 #map dD push :remove
+map dp yank-path
 set dircounts
+
