@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# SSH wrapper for termnot2 - sets up control socket and stores session info
+
+SOCKET_DIR="$HOME/.ssh/sockets"
+SESSION_DIR="/tmp/termnot-sessions"
+mkdir -p "$SOCKET_DIR" "$SESSION_DIR"
+
+# Parse user@host from arguments (simplified - takes last arg that looks like a host)
+HOST_ARG=""
+for arg in "$@"; do
+    case "$arg" in
+        -*)  ;;  # skip flags
+        *)   HOST_ARG="$arg" ;;
+    esac
+done
+
+if [ -z "$HOST_ARG" ]; then
+    echo "Usage: sshw [ssh-options] user@host"
+    exit 1
+fi
+
+# Control socket path
+CONTROL_PATH="$SOCKET_DIR/ctrl-$$"
+
+# Get the terminal window PID (our parent's parent typically)
+WINDOW_PID=$(hyprctl activewindow -j 2>/dev/null | jq -r '.pid')
+
+# Store session info for termnot2 to find
+SESSION_FILE="$SESSION_DIR/win-$WINDOW_PID"
+echo "CONTROL_PATH=$CONTROL_PATH" > "$SESSION_FILE"
+echo "HOST=$HOST_ARG" >> "$SESSION_FILE"
+echo "SSH_PID=$$" >> "$SESSION_FILE"
+
+cleanup() {
+    rm -f "$SESSION_FILE"
+    rm -f "$CONTROL_PATH"
+}
+trap cleanup EXIT
+
+
+
+# Run SSH with control socket
+exec ssh -o ControlMaster=auto \
+        -o ControlPath="$CONTROL_PATH" \
+        -o ControlPersist=30 \
+        "$@"

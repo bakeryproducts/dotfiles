@@ -9,6 +9,7 @@ alias restart='sudo shutdown -r now'
 alias vpni='sudo -E openconnect $VPN_SERVER:$VPN_PORT -u $VPN_USER --passwd-on-stdin <<<$VPN_PASS --servercert $VPN_CERT'
 alias dpa='docker ps -a'
 alias pw1='ssh -i ~/.ssh/paws1.pem $PAWS_USER@$PAWS_1_NAME'
+alias o='opencode'
 
 zx()
 {

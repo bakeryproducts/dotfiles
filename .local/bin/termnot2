@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# termnot2 - Track jobs in local terminals OR SSH sessions
+# Works with sshw wrapper for remote job tracking
+
+SESSION_DIR="/tmp/termnot-sessions"
+
+# Get the active window's PID
+WINDOW_PID=$(hyprctl activewindow -j | jq -r '.pid')
+
+if [ -z "$WINDOW_PID" ] || [ "$WINDOW_PID" = "null" ]; then
+    notify-send "Error" "Could not get active window PID"
+    exit 1
+fi
+
+# Find the shell process in this terminal
+SHELL_PID=$(pgrep -P "$WINDOW_PID" | head -1)
+
+if [ -z "$SHELL_PID" ]; then
+    SHELL_PID=$(ps --ppid "$WINDOW_PID" -o pid= | head -1 | tr -d ' ')
+fi
+
+if [ -z "$SHELL_PID" ]; then
+    notify-send "Error" "Could not find shell process"
+    exit 1
+fi
+
+# Check if there's an SSH session for this window
+SESSION_FILE="$SESSION_DIR/win-$WINDOW_PID"
+
+if [ -f "$SESSION_FILE" ]; then
+    # SSH mode - read session info
+    source "$SESSION_FILE"
+    
+    if [ ! -S "$CONTROL_PATH" ]; then
+        notify-send "Error" "SSH control socket not found"
+        exit 1
+    fi
+    
+    # Find our TTY by matching SSH_CONNECTION
+    # Control socket sessions share the same connection, so SSH_CONNECTION matches
+    SSH_CONN=$(ssh -S "$CONTROL_PATH" "$HOST" 'echo $SSH_CLIENT' 2>/dev/null | awk '{print $1}')
+    
+    if [ -z "$SSH_CONN" ]; then
+        notify-send "Error" "Could not get SSH connection info"
+        exit 1
+    fi
+    
+    # Find TTY by looking at who is logged in from our IP, get most recent
+    REMOTE_TTY=$(ssh -S "$CONTROL_PATH" "$HOST" \
+        "who | grep '$SSH_CONN' | tail -1 | awk '{print \"/dev/\" \$2}'" 2>/dev/null)
+    
+    if [ -z "$REMOTE_TTY" ] || [ "$REMOTE_TTY" = "/dev/" ]; then
+        notify-send "Error" "Could not determine remote TTY"
+        exit 1
+    fi
+    
+    # Get foreground process on THAT specific TTY (not shells)
+    TTY_SHORT=$(echo "$REMOTE_TTY" | sed 's|/dev/||')
+    
+    REMOTE_PID=$(ssh -S "$CONTROL_PATH" "$HOST" \
+        "ps -t $TTY_SHORT -o pid=,stat=,comm= 2>/dev/null | awk '\$2 ~ /\\+/ && \$3 !~ /^-?(bash|zsh|fish|sh|sshd)$/ {print \$1; exit}'" \
+        2>/dev/null | tr -d ' ')
+    
+    if [ -z "$REMOTE_PID" ]; then
+        notify-send "Error" "No foreground job found on $HOST ($TTY_SHORT)"
+        exit 1
+    fi
+    
+    notify-send "Tracking SSH" "PID $REMOTE_PID on $HOST ($TTY_SHORT)"
+    
+    # Monitor that specific PID
+    (
+        while true; do
+            # Check if the specific PID still exists
+            if ! ssh -S "$CONTROL_PATH" "$HOST" "kill -0 $REMOTE_PID" 2>/dev/null; then
+                notify-send "Job Complete" "Remote job on $HOST finished!"
+                exit 0
+            fi
+            sleep 2
+        done
+    ) &
+    
+else
+    # Local mode - original termnot behavior
+    notify-send "Tracking terminal" "Monitoring PID $SHELL_PID"
+    
+    (
+        while pgrep -P "$SHELL_PID" > /dev/null 2>&1; do
+            sleep 2
+        done
+        
+        notify-send "Job Complete" "Terminal job finished!"
+    ) &
+fi
