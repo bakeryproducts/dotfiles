@@ -79,8 +79,6 @@ for dir in zsh vim git lf hypr keyd opencode; do
     safe_link "$CONFIGS_DIR/$dir" "$TARGET_DIR/$dir" || ((errors++))
 done
 
-# === File configs (link specific files) ===
-safe_link "$CONFIGS_DIR/pycodestyle" "$TARGET_DIR/pycodestyle" || ((errors++))
 
 echo ""
 if [[ $errors -eq 0 ]]; then
