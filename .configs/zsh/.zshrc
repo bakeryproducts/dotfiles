@@ -83,8 +83,6 @@ export EDITOR='vim'
 
 alias zshcfg="vim ~/.zshrc"
 alias vimcfg="vim ~/.config/vim/vimrc"
-# alias astcfg="vim ~/.config/qtile/autostart.sh"
-# alias qticfg="vim ~/.config/qtile/config.py"
 alias wmcfg="vim ~/.config/hypr/hyprland.conf"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 
@@ -95,6 +93,10 @@ export KAGGLE_CONFIG_DIR=~/.config/kaggle/
 
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
+fi
+
+if [ -d "$HOME/.npm-global" ] ; then
+    PATH="$HOME/.npm-global/bin:$PATH"
 fi
 
 if [ -d "$HOME/.cargo/bin" ] ; then
@@ -109,11 +111,25 @@ if [ -f ~/.sh_aliases ]; then
     . ~/.sh_aliases
 fi
 
+if [ -f ~/.sec ]; then
+    . ~/.sec
+fi
+
 
 eval "$(fasd --init posix-alias zsh-hook)"
 [ -f ~/.config/zsh/.fzf.zsh ] && source ~/.config/zsh/.fzf.zsh 
 
 
-if uwsm check may-start; then
-    exec uwsm start hyprland-uwsm.desktop
-fi
+# if uwsm check may-start; then
+#     exec uwsm start hyprland-uwsm.desktop
+# fi
+
+# opencode
+export PATH=$HOME/.opencode/bin:$PATH
+
+# bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

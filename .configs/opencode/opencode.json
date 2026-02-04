@@ -10,12 +10,9 @@
    },
   "mcp": {
     "vault": {
-      "type": "local",
-      "command": ["python", "{env:VAULT_MCP_SERVER_PATH}"],
-      "enabled": true,
-      "environment": {
-        "VAULT_PATH": "{env:VAULT_PATH}"
-      }
+      "type": "remote",
+      "enabled": false,
+      "url": "http://localhost:3000/sse"
     },
     "context7": {
       "type": "remote",

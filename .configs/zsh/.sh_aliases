@@ -19,9 +19,3 @@ cd `fasd_cd -R | fzf | awk '{print $2}'`
 
 alias gg='watch -d -n 0.5 nvidia-smi --query-gpu=utilization.gpu,memory.free,memory.used --format=csv'
 alias ggf='nvitop'
-
-#si()
-#{
-#ssh -t $DB7USER@$DB7HOST env SFTPPASS=$SFTPPASS env SFTPUSER=$SFTPUSER zsh 
-#}
-
