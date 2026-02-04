@@ -1,6 +1,91 @@
 #!/bin/bash
-echo $PWD
-ln -s $PWD/../.configs/lf/lfrc ~/.config/lf/lfrc
-ln -s $PWD/../.configs/zsh ~/.config/zsh
-ln -s $PWD/../.configs/vim ~/.config/vim
-ln -s $PWD/../.configs/git ~/.config/git
+#
+# Idempotent symlink setup for dotfiles
+# Safe to run multiple times - handles existing links gracefully
+#
+
+set -euo pipefail
+
+FORCE=false
+[[ "${1:-}" == "-f" || "${1:-}" == "--force" ]] && FORCE=true
+
+# Resolve script location (works regardless of where it's called from)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
+CONFIGS_DIR="$DOTFILES_DIR/.configs"
+TARGET_DIR="${XDG_CONFIG_HOME:-$HOME/.config}"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+log_ok()    { echo -e "${GREEN}[OK]${NC} $1"; }
+log_skip()  { echo -e "${YELLOW}[SKIP]${NC} $1"; }
+log_err()   { echo -e "${RED}[ERROR]${NC} $1"; }
+
+# Create symlink safely
+# Usage: safe_link <source> <target>
+safe_link() {
+    local src="$1"
+    local dst="$2"
+    local dst_dir="$(dirname "$dst")"
+    
+    # Check source exists
+    if [[ ! -e "$src" ]]; then
+        log_err "Source does not exist: $src"
+        return 1
+    fi
+    
+    # Create parent directory if needed
+    if [[ ! -d "$dst_dir" ]]; then
+        mkdir -p "$dst_dir"
+    fi
+    
+    # Handle existing target
+    if [[ -L "$dst" ]]; then
+        local current_target="$(readlink "$dst")"
+        if [[ "$current_target" == "$src" ]]; then
+            log_skip "$dst (already linked)"
+            return 0
+        elif [[ "$FORCE" == true ]]; then
+            rm "$dst"
+            ln -s "$src" "$dst"
+            log_ok "$dst -> $src (relinked)"
+            return 0
+        else
+            log_err "$dst -> $current_target (use -f to relink)"
+            return 1
+        fi
+    elif [[ -e "$dst" ]]; then
+        log_err "$dst exists (not a symlink, backup manually)"
+        return 1
+    fi
+    
+    # Create the symlink
+    ln -s "$src" "$dst"
+    log_ok "$dst -> $src"
+}
+
+echo "Dotfiles: $DOTFILES_DIR"
+echo "Target:   $TARGET_DIR"
+echo ""
+
+errors=0
+
+# === Directory configs (link entire directory) ===
+for dir in zsh vim git lf hypr keyd opencode; do
+    safe_link "$CONFIGS_DIR/$dir" "$TARGET_DIR/$dir" || ((errors++))
+done
+
+# === File configs (link specific files) ===
+safe_link "$CONFIGS_DIR/pycodestyle" "$TARGET_DIR/pycodestyle" || ((errors++))
+
+echo ""
+if [[ $errors -eq 0 ]]; then
+    log_ok "All symlinks created successfully"
+else
+    log_err "$errors error(s) occurred"
+    exit 1
+fi

@@ -1,2 +1,58 @@
 #!/bin/bash
-ln -s -f $PWD/bin/* ~/.local/bin
+#
+# Idempotent symlink setup for custom scripts
+#
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BIN_SRC="$SCRIPT_DIR/bin"
+BIN_DST="${HOME}/.local/bin"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m'
+
+log_ok()    { echo -e "${GREEN}[OK]${NC} $1"; }
+log_skip()  { echo -e "${YELLOW}[SKIP]${NC} $1"; }
+log_err()   { echo -e "${RED}[ERROR]${NC} $1"; }
+
+# Ensure target directory exists
+mkdir -p "$BIN_DST"
+
+errors=0
+
+for file in "$BIN_SRC"/*; do
+    [[ -f "$file" ]] || continue
+    
+    name="$(basename "$file")"
+    dst="$BIN_DST/$name"
+    
+    if [[ -L "$dst" ]]; then
+        current="$(readlink "$dst")"
+        if [[ "$current" == "$file" ]]; then
+            log_skip "$name (already linked)"
+            continue
+        else
+            log_err "$name -> $current (linked elsewhere)"
+            ((errors++))
+            continue
+        fi
+    elif [[ -e "$dst" ]]; then
+        log_err "$name exists (not a symlink)"
+        ((errors++))
+        continue
+    fi
+    
+    ln -s "$file" "$dst"
+    log_ok "$name"
+done
+
+echo ""
+if [[ $errors -eq 0 ]]; then
+    log_ok "All scripts linked"
+else
+    log_err "$errors error(s)"
+    exit 1
+fi
