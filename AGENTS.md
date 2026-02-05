@@ -14,6 +14,11 @@ dotfiles/
 │   │   └── termnot2   # Terminal notifications
 │   ├── link-bins      # Script to symlink bins to ~/.local/bin
 │   └── link-cfgs      # Script to symlink configs to ~/.config
+├── setup/
+│   ├── install-iosevka.sh    # Iosevka Nerd Font installer
+│   └── programs/
+│       ├── alacritty.sh      # Alacritty install
+│       └── docker.sh         # Docker install
 ├── .bashrc            # Bash config (fallback)
 └── .gitignore
 ```
