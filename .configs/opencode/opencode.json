@@ -28,6 +28,11 @@
       "type": "remote",
       "url": "http://localhost:3001/sse",
       "enabled": false
+    },
+    "chrome-devtools": {
+      "type": "local",
+      "command": ["npx", "-y", "chrome-devtools-mcp@latest"],
+      "enabled": false
     }
   }
 }
