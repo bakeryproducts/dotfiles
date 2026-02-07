@@ -75,7 +75,7 @@ echo ""
 errors=0
 
 # === Directory configs (link entire directory) ===
-for dir in zsh vim git lf hypr keyd opencode; do
+for dir in alacritty zsh vim git lf hypr keyd opencode; do
     safe_link "$CONFIGS_DIR/$dir" "$TARGET_DIR/$dir" || ((errors++))
 done
 
