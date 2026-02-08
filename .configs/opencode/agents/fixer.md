@@ -1,6 +1,6 @@
 ---
 description: One step fixer agent
-model: amazon-bedrock/us.anthropic.claude-opus-4-5-20251101-v1:0
+model: amazon-bedrock/us.anthropic.claude-opus-4-6-v1
 mode: primary
 temperature: 0.1
 tools:

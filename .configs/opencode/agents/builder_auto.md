@@ -1,7 +1,7 @@
 ---
 description: Builder agent, writes code helping with tasks
 mode: primary
-model: amazon-bedrock/us.anthropic.claude-opus-4-5-20251101-v1:0
+model: amazon-bedrock/us.anthropic.claude-opus-4-6-v1
 temperature: 0.1
 tools:
   write: true
