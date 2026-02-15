@@ -3,14 +3,29 @@
   "lsp": false,
   "small_model": "google/gemini-3-flash-preview",
   "share": "disabled",
+  "experimental": {
+    "mcp_timeout": 600000
+  },
   "agent": {
-         "plan": {
-           "disable": true
-         },
-         "build": {
-           "disable": true
-         }
-   },
+    "plan": {
+      "disable": true
+    },
+    "build": {
+      "disable": true
+    },
+    "asker": {
+      "color": "#b8bb26"
+    },
+    "builder": {
+      "color": "#d79921"
+    },
+    "planner": {
+      "color": "#83a598"
+    },
+    "fixer": {
+      "color": "#d3869b"
+    }
+  },
   "mcp": {
     "vault": {
       "type": "remote",
