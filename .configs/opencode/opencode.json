@@ -44,14 +44,14 @@
       "enabled": false
     },
     "adk": {
-      "type": "remote",
-      "url": "http://localhost:3001/sse",
-      "enabled": false
+        "type": "remote",
+        "url": "http://localhost:3001/sse",
+        "enabled": false
     },
     "chrome-devtools": {
-      "type": "local",
-      "command": ["npx", "-y", "chrome-devtools-mcp@latest"],
-      "enabled": false
+        "type": "local",
+        "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--browserUrl", "http://localhost:9222"],
+        "enabled": false
     },
     "call-human": {
       "type": "remote",
@@ -62,5 +62,9 @@
       },
       "enabled": false
     }
+  },
+
+  "tools": {
+    "gmail_*": false
   }
 }
