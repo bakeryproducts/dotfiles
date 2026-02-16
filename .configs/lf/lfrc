@@ -37,10 +37,11 @@ map O $mimeopen --ask $f
 # text files and a file opener for the rest.
 cmd open ${{
     test -L $f && f=$(readlink -f $f)
+    case $f in
+        *.ts|*.tsx|*.js|*.jsx|*.go|*.rs|*.py|*.lua|*.sh|*.css|*.scss|*.html|*.yml|*.yaml|*.toml|*.md|*.txt|*.json|*.jsonl|*.conf|*.cfg|*.ini|*.env|*.vue|*.svelte) $EDITOR $fx; exit;;
+    esac
     case $(file --mime-type $f -b) in
-        text/*) $EDITOR $fx;;
-        text/*|application/json) $EDITOR $fx;;
-        text/*|application/jsonl) $EDITOR $fx;;
+        text/*|application/json|application/jsonl) $EDITOR $fx;;
         image/*) for f in $fx; do setsid feh $f > /dev/null 2> /dev/null & done;;
         *) for f in $fx; do setsid $OPENER $f > /dev/null 2> /dev/null & done;;
     esac

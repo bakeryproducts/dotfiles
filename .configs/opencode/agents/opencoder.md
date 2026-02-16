@@ -1,6 +1,7 @@
 ---
 description: OpenCode system helper agent
 temperature: 0.1
+mode: subagent
 tools:
   write: true
   edit: true
