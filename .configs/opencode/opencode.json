@@ -24,6 +24,9 @@
     },
     "fixer": {
       "color": "#d3869b"
+    },
+    "bridge": {
+      "color": "#fe8019"
     }
   },
   "mcp": {
