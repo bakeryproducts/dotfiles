@@ -17,7 +17,10 @@ Gall
 ## MCP Servers
 
 - **vault**: Personal vault/notes access
-- **context7**: Up-to-date library documentation
+
+## Skills (gski)
+
+Pip-installable package at `~/Documents/gski`. Bundles CLI tools and OpenCode SKILL.md files (nanobanana, nanoscope). See project AGENTS.md for details.
 
 ## Dotfiles Repo
 Location: `~/Documents/dotfiles`
@@ -47,7 +50,7 @@ tickets/
 ```
 
 **States:** `open`, `in_progress`, `done`, `cancelled`
-**Priorities:** `high`, `medium`, `low`
+**Priorities:** integer 0-10 (10 = most urgent)
 
 ### Workflow
 
