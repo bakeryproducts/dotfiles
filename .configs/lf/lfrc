@@ -39,6 +39,7 @@ cmd open ${{
     test -L $f && f=$(readlink -f $f)
     case $f in
         *.ts|*.tsx|*.js|*.jsx|*.go|*.rs|*.py|*.lua|*.sh|*.css|*.scss|*.html|*.yml|*.yaml|*.toml|*.md|*.txt|*.json|*.jsonl|*.conf|*.cfg|*.ini|*.env|*.vue|*.svelte) $EDITOR $fx; exit;;
+        *.wav|*.mp3|*.flac|*.ogg|*.m4a|*.aac|*.opus|*.mp4|*.mkv|*.avi|*.webm|*.mov) setsid vlc $f > /dev/null 2> /dev/null & exit;;
     esac
     case $(file --mime-type $f -b) in
         text/*|application/json|application/jsonl) $EDITOR $fx;;
@@ -124,6 +125,23 @@ cmd yank-path ${{
     printf "$fx" | wl-copy
     # lf -remote "send $id echo 'Yanked path(s) to clipboard'"
 }}
+map ax extract
+
+cmd extract-dir ${{
+    set -f
+    dirname="${f%.*}"
+    [ "${dirname##*.}" = "tar" ] && dirname="${dirname%.*}"
+    mkdir -p "$dirname"
+    case $f in
+        *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar xjvf $f -C "$dirname";;
+        *.tar.gz|*.tgz) tar xzvf $f -C "$dirname";;
+        *.tar.xz|*.txz) tar xJvf $f -C "$dirname";;
+        *.zip) unzip $f -d "$dirname";;
+        *.rar) unrar x $f "$dirname/";;
+        *.7z) 7z x $f -o"$dirname";;
+    esac
+}}
+map ad extract-dir
 map d
 map dd cut
 map dD delete
