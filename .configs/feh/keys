@@ -1,0 +1,23 @@
+# Navigation between images
+next_img l
+prev_img h
+
+# Zoom
+zoom_in k
+zoom_out j
+
+# Scroll (when zoomed in)
+scroll_left H
+scroll_right L
+scroll_up K
+scroll_down J
+
+# Jump
+jump_first g
+jump_last G
+jump_fwd C-f
+jump_back C-b
+
+# Unbind conflicting defaults
+toggle_pause
+toggle_keep_vp
