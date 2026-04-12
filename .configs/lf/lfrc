@@ -39,7 +39,7 @@ cmd open ${{
     test -L $f && f=$(readlink -f $f)
     case $f in
         *.ts|*.tsx|*.js|*.jsx|*.go|*.rs|*.py|*.lua|*.sh|*.css|*.scss|*.html|*.yml|*.yaml|*.toml|*.md|*.txt|*.json|*.jsonl|*.conf|*.cfg|*.ini|*.env|*.vue|*.svelte) $EDITOR $fx; exit;;
-        *.wav|*.mp3|*.flac|*.ogg|*.m4a|*.aac|*.opus|*.mp4|*.mkv|*.avi|*.webm|*.mov) setsid vlc $f > /dev/null 2> /dev/null & exit;;
+        *.wav|*.mp3|*.flac|*.ogg|*.m4a|*.aac|*.opus|*.mp4|*.mkv|*.avi|*.webm|*.mov) setsid vlc $fx > /dev/null 2> /dev/null & exit;;
     esac
     case $(file --mime-type $f -b) in
         text/*|application/json|application/jsonl) $EDITOR $fx;;

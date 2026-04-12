@@ -1,6 +1,7 @@
 node_modules/
 bun.lock
 package.json
+package-lock.json
 bridge.json
 commands/bridge*
 plugins/bridge*
