@@ -6,6 +6,10 @@
   "experimental": {
     "mcp_timeout": 600000
   },
+  "compaction": {
+    "auto": false
+  },
+  "formatter": false,
   "agent": {
     "plan": {
       "disable": true
@@ -66,5 +70,26 @@
 
   "tools": {
     "gmail_*": false
+  },
+  "provider": {
+    "pallie": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Pallie",
+      "options": {
+        "baseURL": "http://localhost:8200/v1",
+        "apiKey": "{env:PALLIE_API_KEY}"
+      },
+      "models": {
+        "cal001": {
+          "name": "Pallie cal001",
+          "attachment": true,
+          "tool_call": true,
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        }
+      }
+    }
   }
 }

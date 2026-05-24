@@ -1,19 +1,22 @@
 ---
 description: Builder agent, writes code helping with tasks
 mode: primary
-model: amazon-bedrock/us.anthropic.claude-opus-4-6-v1
+model: amazon-bedrock/us.anthropic.claude-opus-4-7
 temperature: 0.1
 tools:
   write: true
   edit: true
   bash: true
 permission:
-  edit: ask
+  edit: allow
   bash:
     "*": ask
     "git diff": allow
     "git log*": allow
+    "echo *": allow
     "grep *": allow
+    "rg *": allow
+    "find *": allow
     "ls *": allow
   webfetch: allow
 ---

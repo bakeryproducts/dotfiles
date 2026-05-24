@@ -1,6 +1,6 @@
 ---
 description: Planning and analysis without making changes
-model: amazon-bedrock/us.anthropic.claude-opus-4-6-v1
+model: amazon-bedrock/us.anthropic.claude-opus-4-7
 <!-- mode: primary -->
 temperature: 0.1
 tools:
