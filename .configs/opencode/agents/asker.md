@@ -1,8 +1,7 @@
 ---
 description: Answer quick questions
-model: amazon-bedrock/us.anthropic.claude-opus-4-7
+model: amazon-bedrock/us.anthropic.claude-opus-4-8
 mode: primary
-temperature: 0.1
 tools:
   write: false
   edit: false
