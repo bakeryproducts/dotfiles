@@ -1,11 +1,15 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "lsp": false,
-  "small_model": "google/gemini-3-flash-preview",
+  "small_model": "google/gemini-3.5-flash",
   "share": "disabled",
   "experimental": {
     "mcp_timeout": 600000
   },
+  "compaction": {
+    "auto": false
+  },
+  "formatter": false,
   "agent": {
     "plan": {
       "disable": true
@@ -19,14 +23,15 @@
     "builder": {
       "color": "#d79921"
     },
-    "planner": {
+    "inspector": {
       "color": "#83a598"
     },
     "fixer": {
       "color": "#d3869b"
     },
     "bridge": {
-      "color": "#fe8019"
+      "color": "#fb4934",
+      "disable": true
     }
   },
   "mcp": {
@@ -66,5 +71,37 @@
 
   "tools": {
     "gmail_*": false
+  },
+  "provider": {
+      "bedrock-fable": {
+        "npm": "@ai-sdk/amazon-bedrock",
+        "name": "Bedrock (Fable / data-share)",
+        "options": {
+          "apiKey": "{env:AWS_BEARER_TOKEN_BEDROCK_FABLE}",
+          "region": "us-east-1"
+        },
+        "models": {
+          "global.anthropic.claude-fable-5": { "name": "Claude Fable 5" }
+        }
+      },
+    "pallie": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Pallie",
+      "options": {
+        "baseURL": "http://localhost:8200/v1",
+        "apiKey": "{env:PALLIE_API_KEY}"
+      },
+      "models": {
+        "cal001": {
+          "name": "Pallie cal001",
+          "attachment": true,
+          "tool_call": true,
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          }
+        }
+      }
+    }
   }
 }
