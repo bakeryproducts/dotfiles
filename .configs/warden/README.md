@@ -15,12 +15,17 @@ Secrets and state live outside this repository.
 
 ## Usage
 
-    warden up [--steal]   pull state, start, take lock
-    warden down           stop, push state, release lock
-    warden status         url, lock holder, containers, reachability
-    warden logs [n]       follow container logs
-    warden backups        list timestamped state backups on the remote
-    warden url            print the vault url
+    warden up [--steal]    start, take lock
+    warden down            stop
+    warden push            sync state to remote, release lock (requires stopped)
+    warden pull [--force]  sync state from remote (requires stopped)
+    warden status          url, lock holder, containers, reachability
+    warden logs [n]        follow container logs
+    warden backups         list timestamped state backups on the remote
+    warden url             print the vault url
+
+Syncing is always explicit: `up` and `down` never touch the remote. Only
+`push`, `pull` and `backups` talk to it.
 
 ## Prerequisites
 
@@ -50,12 +55,13 @@ Secrets and state live outside this repository.
 
 ## Switching machines
 
-    warden down     # on the machine currently running it
-    warden up       # on the other machine
+    warden down && warden push    # on the machine currently running it
+    warden pull && warden up      # on the other machine
 
-`warden down` pushes state and releases the lock. `warden up` refuses to start
-if the lock is held elsewhere; overwritten files are moved into timestamped
-backup folders on the remote rather than discarded.
+`push` releases the lock, `up` takes it. `up` refuses to start while the lock
+is held elsewhere, so forgetting to push fails closed rather than diverging.
+Files overwritten by a push are moved into timestamped backup folders on the
+remote rather than discarded.
 
 If a machine died without releasing the lock, `warden up --steal` overrides it.
 Only use this when that machine is genuinely gone — two live instances will

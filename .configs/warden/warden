@@ -60,10 +60,7 @@ cmd_up() {
       echo "stealing lock from '$holder'"
     fi
     if [[ "$holder" != "$ME" ]]; then
-      echo "pulling state from $REMOTE"
-      rclone sync "$REMOTE/data" "$DATA" "${RCLONE_FLAGS[@]}"
-    else
-      echo "lock already ours, keeping local state"
+      echo "note: local state may be older than the remote -- 'warden pull' if unsure"
     fi
   fi
 
@@ -80,21 +77,49 @@ cmd_up() {
 
 cmd_down() {
   compose down
+  [[ -n "$REMOTE" ]] && echo "state not pushed -- 'warden push' to sync and release the lock"
+  return 0
+}
 
-  if [[ -n "$REMOTE" ]]; then
-    local holder; holder="$(lock_holder)"
-    if [[ -n "$holder" && "$holder" != "$ME" ]]; then
-      echo "lock belongs to '$holder', refusing to push from $ME" >&2
-      exit 1
-    fi
-    local stamp; stamp="$(date +%F-%H%M%S)"
-    claim_perms
-    echo "pushing state to $REMOTE (previous -> backups/$stamp)"
-    rclone sync "$DATA" "$REMOTE/data" "${RCLONE_FLAGS[@]}" \
-      --backup-dir "$REMOTE/backups/$stamp"
-    rclone deletefile "$REMOTE/$LOCK" 2>/dev/null || true
-    echo "lock released"
+running() { [[ -n "$(compose ps -q 2>/dev/null)" ]]; }
+
+require_stopped() {
+  running && { echo "containers are running -- 'warden down' first" >&2; exit 1; }
+  return 0
+}
+
+require_remote() {
+  [[ -n "$REMOTE" ]] || { echo "no remote configured (WARDEN_REMOTE)" >&2; exit 1; }
+}
+
+cmd_push() {
+  require_remote
+  require_stopped
+  local holder; holder="$(lock_holder)"
+  if [[ -n "$holder" && "$holder" != "$ME" ]]; then
+    echo "lock belongs to '$holder', refusing to push from $ME" >&2
+    exit 1
   fi
+  local stamp; stamp="$(date +%F-%H%M%S)"
+  claim_perms
+  echo "pushing state to $REMOTE (previous -> backups/$stamp)"
+  rclone sync "$DATA" "$REMOTE/data" "${RCLONE_FLAGS[@]}" \
+    --backup-dir "$REMOTE/backups/$stamp"
+  rclone deletefile "$REMOTE/$LOCK" 2>/dev/null || true
+  echo "lock released"
+}
+
+cmd_pull() {
+  require_remote
+  require_stopped
+  local holder; holder="$(lock_holder)"
+  if [[ -n "$holder" && "$holder" != "$ME" ]]; then
+    echo "lock held by '$holder' -- it has unpushed state, pulling would overwrite yours" >&2
+    echo "override: warden pull --force" >&2
+    [[ "${1:-}" == "--force" ]] || exit 1
+  fi
+  echo "pulling state from $REMOTE"
+  rclone sync "$REMOTE/data" "$DATA" "${RCLONE_FLAGS[@]}"
 }
 
 cmd_status() {
@@ -123,6 +148,8 @@ cmd_backups() {
 case "${1:-}" in
   up)      shift; cmd_up "${1:-}" ;;
   down)    shift; cmd_down ;;
+  push)    shift; cmd_push ;;
+  pull)    shift; cmd_pull "${1:-}" ;;
   status)  shift; cmd_status ;;
   logs)    shift; cmd_logs "${1:-50}" ;;
   backups) shift; cmd_backups ;;
@@ -131,12 +158,16 @@ case "${1:-}" in
     cat >&2 <<EOF
 usage: warden <command>
 
-  up [--steal]   pull state, start, take lock
-  down           stop, push state, release lock
-  status         url, lock holder, containers, reachability
-  logs [n]       follow container logs
-  backups        list timestamped state backups on the remote
-  url            print the vault url
+  up [--steal]    start, take lock
+  down            stop
+  push            sync state to remote, release lock (requires stopped)
+  pull [--force]  sync state from remote (requires stopped)
+  status          url, lock holder, containers, reachability
+  logs [n]        follow container logs
+  backups         list timestamped state backups on the remote
+  url             print the vault url
+
+nothing touches the remote except push, pull and backups.
 
 secrets file: $ENV_FILE
 EOF
