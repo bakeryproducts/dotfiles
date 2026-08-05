@@ -1,3 +1,6 @@
 */**/__py*
 .configs/git/credentials
 .configs/zsh/.paws
+.env
+.configs/warden/.env
+.configs/warden/data/

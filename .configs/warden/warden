@@ -1,0 +1,144 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+HERE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+ENV_FILE="${WARDEN_ENV:-$HOME/.config/warden/env}"
+
+[[ -f "$ENV_FILE" ]] || {
+  echo "no secrets file: $ENV_FILE" >&2
+  echo "copy .env.example there and fill it in (or set WARDEN_ENV)" >&2
+  exit 1
+}
+set -a; source "$ENV_FILE"; set +a
+
+: "${WARDEN_TAILNET:?set WARDEN_TAILNET in $ENV_FILE}"
+: "${WARDEN_DATA:?set WARDEN_DATA in $ENV_FILE}"
+
+HOSTNAME_TS="${WARDEN_HOSTNAME:-warden}"
+DATA="$WARDEN_DATA"
+REMOTE="${WARDEN_REMOTE:-}"
+URL="https://${HOSTNAME_TS}.${WARDEN_TAILNET}"
+LOCK="warden.lock"
+ME="$(hostname)"
+RCLONE_FLAGS=(--create-empty-src-dirs --ignore-times --exclude 'ts-state/files/**')
+
+compose() { docker compose --env-file "$ENV_FILE" -f "$HERE/docker-compose.yml" "$@"; }
+
+lock_holder() {
+  [[ -n "$REMOTE" ]] || return 0
+  rclone cat "$REMOTE/$LOCK" 2>/dev/null || true
+}
+
+claim_perms() {
+  docker run --rm -v "$DATA:/d" alpine chown -R "$(id -u):$(id -g)" /d >/dev/null
+}
+
+wait_ready() {
+  printf 'waiting for %s ' "$URL"
+  for i in {1..90}; do
+    local code
+    code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 "$URL/api/config" 2>/dev/null || true)"
+    [[ "$code" == "200" ]] && { echo " ready"; return 0; }
+    printf '.'
+    sleep 2
+  done
+  echo " TIMEOUT" >&2
+  echo "check: warden logs" >&2
+  return 1
+}
+
+cmd_up() {
+  local steal="${1:-}"
+  if [[ -n "$REMOTE" ]]; then
+    local holder; holder="$(lock_holder)"
+    if [[ -n "$holder" && "$holder" != "$ME" ]]; then
+      if [[ "$steal" != "--steal" ]]; then
+        echo "locked by '$holder' -- run 'warden down' there first" >&2
+        echo "if that machine is gone for good: warden up --steal" >&2
+        exit 1
+      fi
+      echo "stealing lock from '$holder'"
+    fi
+    if [[ "$holder" != "$ME" ]]; then
+      echo "pulling state from $REMOTE"
+      rclone sync "$REMOTE/data" "$DATA" "${RCLONE_FLAGS[@]}"
+    else
+      echo "lock already ours, keeping local state"
+    fi
+  fi
+
+  mkdir -p "$DATA/vw-data" "$DATA/ts-state"
+  compose up -d
+  wait_ready
+
+  if [[ -n "$REMOTE" ]]; then
+    printf '%s' "$ME" | rclone rcat "$REMOTE/$LOCK"
+    echo "lock acquired by $ME"
+  fi
+  echo "$URL"
+}
+
+cmd_down() {
+  compose down
+
+  if [[ -n "$REMOTE" ]]; then
+    local holder; holder="$(lock_holder)"
+    if [[ -n "$holder" && "$holder" != "$ME" ]]; then
+      echo "lock belongs to '$holder', refusing to push from $ME" >&2
+      exit 1
+    fi
+    local stamp; stamp="$(date +%F-%H%M%S)"
+    claim_perms
+    echo "pushing state to $REMOTE (previous -> backups/$stamp)"
+    rclone sync "$DATA" "$REMOTE/data" "${RCLONE_FLAGS[@]}" \
+      --backup-dir "$REMOTE/backups/$stamp"
+    rclone deletefile "$REMOTE/$LOCK" 2>/dev/null || true
+    echo "lock released"
+  fi
+}
+
+cmd_status() {
+  echo "url:    $URL"
+  echo "data:   $DATA"
+  echo "remote: ${REMOTE:-<none, local only>}"
+  if [[ -n "$REMOTE" ]]; then
+    local holder; holder="$(lock_holder)"
+    echo "lock:   ${holder:-<free>}${holder:+$([[ "$holder" == "$ME" ]] && echo ' (this machine)')}"
+  fi
+  echo
+  compose ps
+  echo
+  local code
+  code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "$URL/api/config" 2>/dev/null || echo 000)"
+  echo "https:  $code"
+}
+
+cmd_logs() { compose logs --tail "${1:-50}" -f; }
+
+cmd_backups() {
+  [[ -n "$REMOTE" ]] || { echo "no remote configured" >&2; exit 1; }
+  rclone lsf --dirs-only "$REMOTE/backups" 2>/dev/null | sort
+}
+
+case "${1:-}" in
+  up)      shift; cmd_up "${1:-}" ;;
+  down)    shift; cmd_down ;;
+  status)  shift; cmd_status ;;
+  logs)    shift; cmd_logs "${1:-50}" ;;
+  backups) shift; cmd_backups ;;
+  url)     echo "$URL" ;;
+  *)
+    cat >&2 <<EOF
+usage: warden <command>
+
+  up [--steal]   pull state, start, take lock
+  down           stop, push state, release lock
+  status         url, lock holder, containers, reachability
+  logs [n]       follow container logs
+  backups        list timestamped state backups on the remote
+  url            print the vault url
+
+secrets file: $ENV_FILE
+EOF
+    exit 1 ;;
+esac
