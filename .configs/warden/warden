@@ -33,18 +33,33 @@ claim_perms() {
   docker run --rm -v "$DATA:/d" alpine chown -R "$(id -u):$(id -g)" /d >/dev/null
 }
 
+TS_EVENTS='Switching ipn state [A-Za-z]+ -> [A-Za-z]+|Startup complete|serve: creating a new proxy handler|serve proxy: applying serve config|got tls cert|acme: |AuthURL|logged in|derp-[0-9]+ connected|state key|Auth key is invalid|health\(warnable=login-state\): error[^"]*|401|403'
+
 wait_ready() {
-  printf 'waiting for %s ' "$URL"
-  for i in {1..90}; do
-    local code
+  local start=$SECONDS shown=0 code total
+  echo "waiting for $URL"
+  while :; do
+    local -a lines=()
+    mapfile -t lines < <(docker logs warden-ts 2>&1 | grep -aoE "$TS_EVENTS" || true)
+    total=${#lines[@]}
+    while (( shown < total )); do
+      printf '  [%3ds] ts: %s\n' "$((SECONDS - start))" "${lines[shown]}"
+      (( shown++ ))
+    done
+
     code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 "$URL/api/config" 2>/dev/null || true)"
-    [[ "$code" == "200" ]] && { echo " ready"; return 0; }
-    printf '.'
+    if [[ "$code" == "200" ]]; then
+      printf '  [%3ds] ready\n' "$((SECONDS - start))"
+      return 0
+    fi
+
+    if (( SECONDS - start > 180 )); then
+      printf '  [%3ds] TIMEOUT (last https code: %s)\n' "$((SECONDS - start))" "${code:-none}" >&2
+      echo "check: warden logs" >&2
+      return 1
+    fi
     sleep 2
   done
-  echo " TIMEOUT" >&2
-  echo "check: warden logs" >&2
-  return 1
 }
 
 cmd_up() {
@@ -65,7 +80,9 @@ cmd_up() {
   fi
 
   mkdir -p "$DATA/vw-data" "$DATA/ts-state"
+  local t0=$SECONDS
   compose up -d
+  printf 'containers up in %ds\n' "$((SECONDS - t0))"
   wait_ready
 
   if [[ -n "$REMOTE" ]]; then
