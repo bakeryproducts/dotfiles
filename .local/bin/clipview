@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+# clipview - render clipboard contents in a scrollable pager.
+# Auto-detects format: JSON -> table, everything else -> markdown.
+# Launched as a floating Hyprland window; quit pager with q.
+#
+
+content="$(wl-paste)"
+
+if [ -z "$content" ]; then
+    content='# Clipboard is empty'
+fi
+
+# Auto-detect format
+fmt="--markdown"
+if printf '%s' "$content" | python -c 'import sys,json; json.load(sys.stdin)' 2>/dev/null; then
+    fmt="--json"
+fi
+
+tmp="$(mktemp)"
+trap 'rm -f "$tmp"' EXIT
+printf '%s' "$content" > "$tmp"
+
+rich "$tmp" $fmt --force-terminal | less -R

@@ -12,6 +12,12 @@ scroll_right L
 scroll_up K
 scroll_down J
 
+# Scroll with Right Alt (keyd remaps it to Ctrl) + hjkl
+scroll_left C-h
+scroll_right C-l
+scroll_up C-k
+scroll_down C-j
+
 # Jump
 jump_first g
 jump_last G

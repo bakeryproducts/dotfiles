@@ -8,3 +8,9 @@
 	smudge = cat
 [diff "ipynb"]
 	textconv = \"/usr/bin/python3\" -m nbstripout -t
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
