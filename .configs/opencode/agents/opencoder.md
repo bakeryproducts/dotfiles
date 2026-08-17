@@ -1,6 +1,7 @@
 ---
 description: OpenCode system helper agent
 mode: subagent
+disable: true
 tools:
   write: true
   edit: true

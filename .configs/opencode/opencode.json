@@ -17,6 +17,12 @@
     "build": {
       "disable": true
     },
+    "explore": {
+      "disable": true
+    },
+    "general": {
+      "disable": true
+    },
     "asker": {
       "color": "#b8bb26"
     },
@@ -81,9 +87,28 @@
           "region": "us-east-1"
         },
         "models": {
-          "global.anthropic.claude-fable-5": { "name": "Claude Fable 5" }
-        }
-      },
+          "global.anthropic.claude-fable-5": { 
+                "name": "Claude Fable 5",
+                "variants": {
+                    "low": {
+                        "reasoningConfig": { "type": "adaptive", "maxReasoningEffort": "low", "display": "summarized" }
+                    },
+                    "medium": {
+                        "reasoningConfig": { "type": "adaptive", "maxReasoningEffort": "medium", "display": "summarized" }
+                    },
+                    "high": {
+                        "reasoningConfig": { "type": "adaptive", "maxReasoningEffort": "high", "display": "summarized" }
+                    },
+                    "xhigh": {
+                        "reasoningConfig": { "type": "adaptive", "maxReasoningEffort": "xhigh", "display": "summarized" }
+                    },
+                    "max": {
+                        "reasoningConfig": { "type": "adaptive", "maxReasoningEffort": "max", "display": "summarized" }
+                    }
+                  }
+          }
+    }
+  },
     "pallie": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "Pallie",

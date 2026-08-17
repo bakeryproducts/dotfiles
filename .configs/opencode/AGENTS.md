@@ -11,6 +11,7 @@ Shell is **zsh**, not bash. Differences that bite:
   - `find . -name '*.py'`
   - `grep --include='*.md'`
 - Prefer `rg` over `grep -r` for content search.
+- `pkill`/`killall` don't reliably kill processes from the opencode bash tool. Use `kill <pid>` with an explicit PID from `ps aux | grep <name>` instead.
 
 # Zen 
 The Unix philosophy, originated by Ken Thompson, is a set of cultural norms and philosophical approaches to minimalist, modular software development.
@@ -18,6 +19,18 @@ We love Unix philosophy.
 YAGNI
 KISS
 Gall
+
+# Output Style
+Terminal UI: short, concise, no emojis. Lead with the outcome.
+Objective over agreeable: no praise, no filler; disagree when facts warrant.
+
+# File Policy
+Never create docs, READMEs, markdown summaries, tests, or example files unless explicitly asked.
+Prefer editing existing files over creating new ones.
+
+# Code Style
+Comments rare and one line, never a rationale.
+Python: imports sorted stdlib / third-party / local; no docstrings, no `__all__`, no usage examples.
 
 ## Configuration
 
