@@ -1,0 +1,192 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+HERE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+ENV_FILE="${WARDEN_ENV:-$HOME/.config/warden/env}"
+
+[[ -f "$ENV_FILE" ]] || {
+  echo "no secrets file: $ENV_FILE" >&2
+  echo "copy .env.example there and fill it in (or set WARDEN_ENV)" >&2
+  exit 1
+}
+set -a; source "$ENV_FILE"; set +a
+
+: "${WARDEN_TAILNET:?set WARDEN_TAILNET in $ENV_FILE}"
+: "${WARDEN_DATA:?set WARDEN_DATA in $ENV_FILE}"
+
+HOSTNAME_TS="${WARDEN_HOSTNAME:-warden}"
+DATA="$WARDEN_DATA"
+REMOTE="${WARDEN_REMOTE:-}"
+URL="https://${HOSTNAME_TS}.${WARDEN_TAILNET}"
+LOCK="warden.lock"
+ME="$(hostname)"
+RCLONE_FLAGS=(--create-empty-src-dirs --ignore-times --exclude 'ts-state/files/**')
+
+compose() { docker compose --env-file "$ENV_FILE" -f "$HERE/docker-compose.yml" "$@"; }
+
+lock_holder() {
+  [[ -n "$REMOTE" ]] || return 0
+  rclone cat "$REMOTE/$LOCK" 2>/dev/null || true
+}
+
+claim_perms() {
+  docker run --rm -v "$DATA:/d" alpine chown -R "$(id -u):$(id -g)" /d >/dev/null
+}
+
+TS_EVENTS='Switching ipn state [A-Za-z]+ -> [A-Za-z]+|Startup complete|serve: creating a new proxy handler|serve proxy: applying serve config|got tls cert|acme: |AuthURL|logged in|derp-[0-9]+ connected|state key|Auth key is invalid|health\(warnable=login-state\): error[^"]*|401|403'
+
+wait_ready() {
+  local start=$SECONDS shown=0 code total
+  echo "waiting for $URL"
+  while :; do
+    local -a lines=()
+    mapfile -t lines < <(docker logs warden-ts 2>&1 | grep -aoE "$TS_EVENTS" || true)
+    total=${#lines[@]}
+    while (( shown < total )); do
+      printf '  [%3ds] ts: %s\n' "$((SECONDS - start))" "${lines[shown]}"
+      (( shown++ ))
+    done
+
+    code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 5 "$URL/api/config" 2>/dev/null || true)"
+    if [[ "$code" == "200" ]]; then
+      printf '  [%3ds] ready\n' "$((SECONDS - start))"
+      return 0
+    fi
+
+    if (( SECONDS - start > 180 )); then
+      printf '  [%3ds] TIMEOUT (last https code: %s)\n' "$((SECONDS - start))" "${code:-none}" >&2
+      echo "check: warden logs" >&2
+      return 1
+    fi
+    sleep 2
+  done
+}
+
+cmd_up() {
+  local steal="${1:-}"
+  if [[ -n "$REMOTE" ]]; then
+    local holder; holder="$(lock_holder)"
+    if [[ -n "$holder" && "$holder" != "$ME" ]]; then
+      if [[ "$steal" != "--steal" ]]; then
+        echo "locked by '$holder' -- run 'warden down' there first" >&2
+        echo "if that machine is gone for good: warden up --steal" >&2
+        exit 1
+      fi
+      echo "stealing lock from '$holder'"
+    fi
+    if [[ "$holder" != "$ME" ]]; then
+      echo "note: local state may be older than the remote -- 'warden pull' if unsure"
+    fi
+  fi
+
+  mkdir -p "$DATA/vw-data" "$DATA/ts-state"
+  local t0=$SECONDS
+  compose up -d
+  printf 'containers up in %ds\n' "$((SECONDS - t0))"
+  wait_ready
+
+  if [[ -n "$REMOTE" ]]; then
+    printf '%s' "$ME" | rclone rcat "$REMOTE/$LOCK"
+    echo "lock acquired by $ME"
+  fi
+  echo "$URL"
+}
+
+cmd_down() {
+  compose down
+  [[ -n "$REMOTE" ]] && echo "state not pushed -- 'warden push' to sync and release the lock"
+  return 0
+}
+
+running() { [[ -n "$(compose ps -q 2>/dev/null)" ]]; }
+
+require_stopped() {
+  running && { echo "containers are running -- 'warden down' first" >&2; exit 1; }
+  return 0
+}
+
+require_remote() {
+  [[ -n "$REMOTE" ]] || { echo "no remote configured (WARDEN_REMOTE)" >&2; exit 1; }
+}
+
+cmd_push() {
+  require_remote
+  require_stopped
+  local holder; holder="$(lock_holder)"
+  if [[ -n "$holder" && "$holder" != "$ME" ]]; then
+    echo "lock belongs to '$holder', refusing to push from $ME" >&2
+    exit 1
+  fi
+  local stamp; stamp="$(date +%F-%H%M%S)"
+  claim_perms
+  echo "pushing state to $REMOTE (previous -> backups/$stamp)"
+  rclone sync "$DATA" "$REMOTE/data" "${RCLONE_FLAGS[@]}" \
+    --backup-dir "$REMOTE/backups/$stamp"
+  rclone deletefile "$REMOTE/$LOCK" 2>/dev/null || true
+  echo "lock released"
+}
+
+cmd_pull() {
+  require_remote
+  require_stopped
+  local holder; holder="$(lock_holder)"
+  if [[ -n "$holder" && "$holder" != "$ME" ]]; then
+    echo "lock held by '$holder' -- it has unpushed state, pulling would overwrite yours" >&2
+    echo "override: warden pull --force" >&2
+    [[ "${1:-}" == "--force" ]] || exit 1
+  fi
+  echo "pulling state from $REMOTE"
+  rclone sync "$REMOTE/data" "$DATA" "${RCLONE_FLAGS[@]}"
+}
+
+cmd_status() {
+  echo "url:    $URL"
+  echo "data:   $DATA"
+  echo "remote: ${REMOTE:-<none, local only>}"
+  if [[ -n "$REMOTE" ]]; then
+    local holder; holder="$(lock_holder)"
+    echo "lock:   ${holder:-<free>}${holder:+$([[ "$holder" == "$ME" ]] && echo ' (this machine)')}"
+  fi
+  echo
+  compose ps
+  echo
+  local code
+  code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "$URL/api/config" 2>/dev/null || echo 000)"
+  echo "https:  $code"
+}
+
+cmd_logs() { compose logs --tail "${1:-50}" -f; }
+
+cmd_backups() {
+  [[ -n "$REMOTE" ]] || { echo "no remote configured" >&2; exit 1; }
+  rclone lsf --dirs-only "$REMOTE/backups" 2>/dev/null | sort
+}
+
+case "${1:-}" in
+  up)      shift; cmd_up "${1:-}" ;;
+  down)    shift; cmd_down ;;
+  push)    shift; cmd_push ;;
+  pull)    shift; cmd_pull "${1:-}" ;;
+  status)  shift; cmd_status ;;
+  logs)    shift; cmd_logs "${1:-50}" ;;
+  backups) shift; cmd_backups ;;
+  url)     echo "$URL" ;;
+  *)
+    cat >&2 <<EOF
+usage: warden <command>
+
+  up [--steal]    start, take lock
+  down            stop
+  push            sync state to remote, release lock (requires stopped)
+  pull [--force]  sync state from remote (requires stopped)
+  status          url, lock holder, containers, reachability
+  logs [n]        follow container logs
+  backups         list timestamped state backups on the remote
+  url             print the vault url
+
+nothing touches the remote except push, pull and backups.
+
+secrets file: $ENV_FILE
+EOF
+    exit 1 ;;
+esac
