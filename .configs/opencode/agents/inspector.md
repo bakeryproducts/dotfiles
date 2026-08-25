@@ -1,6 +1,6 @@
 ---
 description: Read-only codebase research. Gathers evidence - locates files, code, and references, traces behavior to source. Does not design, recommend, or judge; leaves synthesis to the caller.
-model: google/gemini-3.6-flash
+model: google/gemini-3.7-flash
 tools:
   write: false
   edit: false
