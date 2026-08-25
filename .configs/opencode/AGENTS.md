@@ -11,7 +11,6 @@ Shell is **zsh**, not bash. Differences that bite:
   - `find . -name '*.py'`
   - `grep --include='*.md'`
 - Prefer `rg` over `grep -r` for content search.
-- `pkill`/`killall` don't reliably kill processes from the opencode bash tool. Use `kill <pid>` with an explicit PID from `ps aux | grep <name>` instead.
 
 # Zen 
 The Unix philosophy, originated by Ken Thompson, is a set of cultural norms and philosophical approaches to minimalist, modular software development.

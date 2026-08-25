@@ -43,7 +43,7 @@ cmd open ${{
     esac
     case $(file --mime-type $f -b) in
         text/*|application/json|application/jsonl) $EDITOR $fx;;
-        image/*) for f in $fx; do setsid feh $f > /dev/null 2> /dev/null & done;;
+        image/*) setsid feh --start-at "$f" "$(dirname -- "$f")" > /dev/null 2> /dev/null & ;;
         *) for f in $fx; do setsid $OPENER $f > /dev/null 2> /dev/null & done;;
     esac
 }}
