@@ -1,7 +1,7 @@
 ---
 description: Step-by-step agent, works one step at a time with the user
 mode: primary
-model: google/gemini-3.7-flash
+model: google/gemini-3.8-flash
 tools:
   write: true
   edit: true

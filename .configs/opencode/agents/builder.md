@@ -1,7 +1,7 @@
 ---
 description: Builder agent, writes code helping with tasks
 mode: primary
-model: google/gemini-3.7-flash
+model: google/gemini-3.8-flash
 tools:
   write: true
   edit: true
