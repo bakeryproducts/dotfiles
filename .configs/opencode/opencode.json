@@ -91,8 +91,8 @@
           "region": "us-east-1"
         },
         "models": {
-          "global.anthropic.claude-fable-5": { 
-                "name": "Claude Fable 5",
+          "global.anthropic.claude-fable-5-1": { 
+                "name": "Claude Fable 5-1",
                 "variants": {
                     "low": {
                         "reasoningConfig": { "type": "adaptive", "maxReasoningEffort": "low", "display": "summarized" }
