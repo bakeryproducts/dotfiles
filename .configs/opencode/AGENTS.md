@@ -12,6 +12,20 @@ Shell is **zsh**, not bash. Differences that bite:
   - `grep --include='*.md'`
 - Prefer `rg` over `grep -r` for content search.
 
+## Inline code: NEVER `python3 -c '...'`
+HARD RULE. `python3 -c '...'`, `node -e '...'`, `sh -c '...'` with anything beyond a single
+quote-free expression is forbidden. Two quoting layers (shell + language) break every time;
+`\"` inside `'...'` reaches Python literally and is a SyntaxError. Do not attempt to escape
+your way out. Use exactly one of:
+1. Quoted heredoc — one call, shell touches nothing inside:
+   ```
+   python3 - <<'PY'
+   print(f"{x.strftime('%Y')} and \"quotes\" are fine")
+   PY
+   ```
+2. Write the script to `/tmp/opencode/x.py` with the Write tool, then `python3 /tmp/opencode/x.py`.
+Inside f-string `{}` alternate quote types; never backslash-escape there.
+
 # Zen 
 The Unix philosophy, originated by Ken Thompson, is a set of cultural norms and philosophical approaches to minimalist, modular software development.
 We love Unix philosophy.

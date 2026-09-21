@@ -10,6 +10,7 @@ y = 0
 
 [window]
 opacity = 0.95
+dynamic_padding = true
 
 # Gruvbox Dark theme
 [colors.primary]
