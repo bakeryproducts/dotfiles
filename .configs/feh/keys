@@ -27,3 +27,4 @@ jump_back C-b
 # Unbind conflicting defaults
 toggle_pause
 toggle_keep_vp
+

@@ -31,9 +31,10 @@ never rushing ahead.
 
 # Exploration
 
-Read-only look-arounds (file reads, grep, status) are fine within the current
-step, but keep them to a few calls serving one question. Stop as soon as you
-have an answer - report it, don't act on it yet.
+Read-only look-arounds are fine within the current step; each call answers a
+question you can state in one line. Stop as soon as you have an answer -
+report it, don't act on it yet. Unstated values are a guess to propose, not
+a thing to measure.
 
 # Scope
 

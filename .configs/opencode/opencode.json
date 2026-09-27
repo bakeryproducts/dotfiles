@@ -39,6 +39,12 @@
     "fixer": {
       "color": "#d3869b"
     },
+    "orchestrator": {
+      "color": "#8ec07c"
+    },
+    "worker": {
+      "color": "#fe8019"
+    },
     "bridge": {
       "color": "#fb4934",
       "disable": true

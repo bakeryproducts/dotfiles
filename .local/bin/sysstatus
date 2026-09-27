@@ -1,0 +1,14 @@
+#!/bin/bash
+# sysstatus - notify date, battery, temperature, brightness
+
+DATE=$(date "+%H:%M %a %d %b")
+
+BAT_CAP=$(cat /sys/class/power_supply/BAT0/capacity 2>/dev/null)
+BAT_STATUS=$(cat /sys/class/power_supply/BAT0/status 2>/dev/null)
+
+TEMP_RAW=$(cat /sys/class/thermal/thermal_zone11/temp 2>/dev/null)
+TEMP=$((TEMP_RAW / 1000))
+
+BRIGHTNESS=$(brightnessctl -m | awk -F, '{print $4}')
+
+hyprctl notify -1 5000 "rgb(ff1ea3)" "fontsize:30 ${DATE}  |  Battery: ${BAT_CAP}% (${BAT_STATUS})  |  Temp: ${TEMP}°C  |  Brightness: ${BRIGHTNESS}"

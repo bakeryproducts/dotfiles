@@ -8,7 +8,7 @@ tools:
 permission:
   edit: deny
   bash:
-    "*": ask
+    "*": allow
     "gski *": allow
   webfetch: allow
 ---
