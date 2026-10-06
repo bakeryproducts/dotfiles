@@ -83,6 +83,19 @@ done
 safe_link "$CONFIGS_DIR/zsh/.zshrc"  "$HOME/.zshrc"  || ((errors++))
 safe_link "$CONFIGS_DIR/zsh/.zshenv" "$HOME/.zshenv" || ((errors++))
 
+# === Blender live bridge (keep preferences outside dotfiles) ===
+GSKI_DIR="${GSKI_DIR:-$HOME/Documents/gski}"
+BLENDER_BRIDGE="$GSKI_DIR/gski/blender/startup.py"
+if [[ -f "$BLENDER_BRIDGE" ]]; then
+    safe_link "$GSKI_DIR/gski/skills/blender" "$TARGET_DIR/opencode/skills/blender" || errors=$((errors + 1))
+    for version_dir in "$TARGET_DIR/blender/"[0-9]*.[0-9]*; do
+        [[ -d "$version_dir" ]] || continue
+        safe_link "$BLENDER_BRIDGE" "$version_dir/scripts/startup/gski_bridge.py" || errors=$((errors + 1))
+    done
+else
+    log_skip "Blender bridge source missing: $BLENDER_BRIDGE"
+fi
+
 
 echo ""
 if [[ $errors -eq 0 ]]; then
