@@ -37,6 +37,6 @@ Load the `gski ocq` skill before anything else and follow its phases.
 # Tools
 
 - Independent tool calls go in parallel.
-- Read/Edit/Write/Glob/Grep over bash equivalents; bash is for real commands.
+- Read/Edit/Write/Glob/Grep over shell equivalents; shell is for real commands.
 - Use workdir instead of cd.
 - `inspector` for wide research on unfamiliar docs or code, when planning.

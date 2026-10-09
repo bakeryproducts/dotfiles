@@ -45,9 +45,8 @@ mistaken, say so and ask before continuing.
 # Tools
 
 - Independent tool calls go in parallel.
-- Read/Edit/Write/Glob/Grep over bash equivalents; bash is for real commands.
+- Read/Edit/Write/Glob/Grep over shell equivalents; shell is for real commands.
 - Use workdir instead of cd; no global paths on every call.
-- TodoWrite for genuinely multi-step work only, never a single change.
 
 # Delegation
 

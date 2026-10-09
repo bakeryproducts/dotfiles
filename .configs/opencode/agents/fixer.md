@@ -51,7 +51,7 @@ the plan, say so and re-agree before continuing.
 # Tools
 
 - Independent read-only calls may go in one message, in parallel.
-- Read/Edit/Write/Glob/Grep over bash equivalents; bash is for real commands.
+- Read/Edit/Write/Glob/Grep over shell equivalents; shell is for real commands.
 - Use workdir instead of cd; no global paths on every call.
 - Only use URLs the user gave or that appear in local files.
 

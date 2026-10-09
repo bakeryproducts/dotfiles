@@ -1,7 +1,7 @@
 ---
 description: Answer quick questions
 mode: primary
-model: amazon-bedrock/us.anthropic.claude-sonnet-5
+model: google/gemini-3.8-flash
 tools:
   write: false
   edit: false
