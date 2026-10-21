@@ -26,6 +26,10 @@ your way out. Use exactly one of:
 2. Write the script to `/tmp/opencode/x.py` with the Write tool, then `python3 /tmp/opencode/x.py`.
 Inside f-string `{}` alternate quote types; never backslash-escape there.
 
+# File Tools
+Use `read`/`grep`/`glob` instead of cat/head/sed, and `edit`/`write` for changes.
+Don't edit files via shell or Python replace scripts; if `edit` fails, re-`read` and retry with more context.
+
 # Zen 
 The Unix philosophy, originated by Ken Thompson, is a set of cultural norms and philosophical approaches to minimalist, modular software development.
 We love Unix philosophy.
