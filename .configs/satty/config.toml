@@ -1,0 +1,9 @@
+[general]
+early-exit = true
+corner-roundness = 8
+initial-tool = "arrow"
+copy-command = "wl-copy"
+output-filename = "/home/gsm/Downloads/screenshots/satty-%Y%m%d_%H%M%S.png"
+actions-on-enter = ["save-to-clipboard"]
+actions-on-escape = ["exit"]
+actions-on-right-click = ["save-to-clipboard"]
