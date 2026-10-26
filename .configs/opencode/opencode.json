@@ -9,11 +9,15 @@
     "mcp_timeout": 600000
   },
   "compaction": {
-    "auto": false
+    "auto": false,
+    "keep": {
+      "tokens": 30000
+    }
   },
   "formatter": false,
   "plugin": [
-    "file:///home/gsm/.config/opencode/plugins/sound-notify.ts"
+    "file:///home/gsm/.config/opencode/plugins/sound-notify.ts",
+    "file:///home/gsm/.config/opencode/plugins/gski-websearch.ts"
   ],
   "agent": {
     "plan": {
@@ -27,9 +31,6 @@
     },
     "general": {
       "disable": true
-    },
-    "asker": {
-      "color": "#b8bb26"
     },
     "builder": {
       "color": "#d79921"
@@ -90,8 +91,17 @@
     "gmail_*": false
   },
   "permissions": [
-    { "action": "external_directory", "resource": "*", "effect": "ask" }
+    { "action": "external_directory", "resource": "*", "effect": "ask" },
+    { "action": "websearch", "resource": "*", "effect": "allow" }
   ],
+  "providers": {
+    "google-vertex": {
+      "settings": {
+        "project": "{env:GOOGLE_CLOUD_PROJECT}",
+        "location": "global"
+      }
+    }
+  },
   "provider": {
       "bedrock-fable": {
         "npm": "@ai-sdk/amazon-bedrock",

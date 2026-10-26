@@ -30,10 +30,6 @@ Some requests a simple and dont need a deep exploration and overthinking.
 Evaluate request first.
 If the user asks for full auto, proceed on your best reading.
 
-# Exploration
-
-Some request may need to explore files, finds things first. 
-Commit to an approach; revisit only on contradicting evidence.
 
 # Scope
 

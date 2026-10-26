@@ -1,35 +1,27 @@
 import { spawn } from "node:child_process"
 
-const SOUNDS = "/home/gsm/Documents/gmcp/oc-bridge-plugin/data/sounds"
-const PERMISSION_SOUND = `${SOUNDS}/question/painsharp04.mp3`
-const IDLE_SOUND = `${SOUNDS}/message/gunslingerpunch03.mp3`
-
-function play(file: string, volume: number) {
-  spawn("paplay", [`--volume=${volume}`, file], { stdio: "ignore", detached: true }).unref()
-}
-
 const seen = new Set<string>()
 
-const muted = new Map<string, boolean>()
-
-async function isMuted(ctx: any, sessionID?: string) {
-  if (!sessionID) return false
-  if (!muted.has(sessionID)) {
-    const info = await ctx.session.get({ sessionID }).catch(() => undefined)
-    muted.set(sessionID, String(info?.title ?? "").startsWith("ocq/"))
-    if (muted.size > 500) muted.delete(muted.keys().next().value!)
-  }
-  return muted.get(sessionID)!
+async function sessionTitle(ctx: any, sessionID?: string): Promise<string> {
+  if (!sessionID) return ""
+  const info = await ctx.session.get({ sessionID }).catch(() => undefined)
+  return String(info?.title ?? "")
 }
 
-function onEvent(event: any) {
+function popup(color: string, text: string) {
+  const msg = `fontsize:20 ${text}`
+  spawn("hyprctl", ["notify", "-1", "6000", color, msg], { stdio: "ignore", detached: true }).unref()
+}
+
+function onEvent(event: any, title = "") {
   if (event.id) {
     if (seen.has(event.id)) return
     seen.add(event.id)
     if (seen.size > 500) seen.delete(seen.values().next().value!)
   }
-  if (event.type === "permission.asked") play(PERMISSION_SOUND, 52429)
-  if (event.type === "session.idle" || event.type === "session.execution.succeeded") play(IDLE_SOUND, 32768)
+  const label = title ? ` - ${title}` : ""
+  if (event.type === "permission.asked") popup("rgb(fb4934)", `Permission needed${label}`)
+  if (event.type === "session.idle" || event.type === "session.execution.succeeded") popup("rgb(d79921)", `Done${label}`)
 }
 
 export default {
@@ -39,8 +31,9 @@ export default {
     void (async () => {
       for await (const event of ctx.event.subscribe({ signal: controller.signal })) {
         if (event.type !== "permission.asked" && event.type !== "session.execution.succeeded") continue
-        if (await isMuted(ctx, event.data?.sessionID)) continue
-        onEvent(event)
+        const title = await sessionTitle(ctx, event.data?.sessionID)
+        if (title.startsWith("ocq/")) continue
+        onEvent(event, title)
       }
     })().catch(() => {})
     return () => controller.abort()
