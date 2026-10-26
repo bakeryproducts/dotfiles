@@ -1,0 +1,41 @@
+#!/bin/bash
+# oc-jump next|prev - cycle through opencode windows that need attention
+
+dir="${XDG_CACHE_HOME:-$HOME/.cache}/oc-attention"
+way=${1:-next}
+[[ -d "$dir" ]] || exit 0
+
+clients=$(hyprctl clients -j)
+active=$(hyprctl activewindow -j | jq -r '.address // empty')
+
+# drop entries whose window is gone, list the rest oldest first
+list=$(for f in "$dir"/*; do
+    [[ -f "$f" ]] || continue
+    addr=$(jq -r '.address' "$f")
+    if jq -e --arg a "$addr" 'any(.[]; .address == $a)' <<<"$clients" >/dev/null; then
+        printf '%s\t%s\t%s\n' "$(jq -r '.ts' "$f")" "$addr" "$f"
+    else
+        rm -f "$f"
+    fi
+done | sort -n)
+
+[[ -n "$list" ]] || exit 0
+mapfile -t addrs < <(cut -f2 <<<"$list")
+mapfile -t files < <(cut -f3 <<<"$list")
+n=${#addrs[@]}
+
+cur=-1
+for i in "${!addrs[@]}"; do
+    [[ "${addrs[i]}" == "$active" ]] && cur=$i
+done
+
+if ((cur < 0)); then
+    [[ $way == prev ]] && t=$((n - 1)) || t=0
+else
+    # a finished session is consumed once you leave it
+    [[ $(jq -r '.kind' "${files[cur]}") == done ]] && rm -f "${files[cur]}"
+    ((n > 1)) || exit 0
+    [[ $way == prev ]] && t=$(((cur - 1 + n) % n)) || t=$(((cur + 1) % n))
+fi
+
+hyprctl dispatch focuswindow "address:${addrs[t]}" >/dev/null
