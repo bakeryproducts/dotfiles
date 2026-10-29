@@ -4,3 +4,5 @@
 .env
 .configs/warden/.env
 .configs/warden/data/
+.configs/opencode/sounds/
+

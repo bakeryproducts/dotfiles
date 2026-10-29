@@ -6,17 +6,11 @@ prev_img h
 zoom_in k
 zoom_out j
 
-# Scroll (when zoomed in)
-scroll_left H
-scroll_right L
-scroll_up K
-scroll_down J
-
-# Scroll with Right Alt (keyd remaps it to Ctrl) + hjkl
-scroll_left C-h
-scroll_right C-l
-scroll_up C-k
-scroll_down C-j
+# Scroll (Shift+hjkl or Right Alt + hjkl; keyd maps control+j/k to Down/Up)
+scroll_left H C-h
+scroll_right L C-l
+scroll_up K Up C-k
+scroll_down J Down C-j
 
 # Jump
 jump_first g

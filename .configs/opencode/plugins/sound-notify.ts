@@ -5,10 +5,31 @@ import { join } from "node:path"
 
 const seen = new Set<string>()
 
-async function sessionTitle(ctx: any, sessionID?: string): Promise<string> {
-  if (!sessionID) return ""
-  const info = await ctx.session.get({ sessionID }).catch(() => undefined)
-  return String(info?.title ?? "")
+const SOUNDS = join(homedir(), ".config/opencode/sounds")
+const VOLUME = "0.6"
+const SOUND: Record<string, string> = {
+  question: "bip-bop-03.mp3",
+  permission: "staplebops-06.mp3",
+  error: "nope-03.mp3",
+  done: "bip-bop-01.mp3",
+  subagent_done: "yup-01.mp3",
+}
+
+function play(name: string) {
+  spawn("pw-play", ["--volume", VOLUME, join(SOUNDS, SOUND[name])], { stdio: "ignore", detached: true }).unref()
+}
+
+function soundFor(event: any, info: any): string | undefined {
+  if (event.type === "form.created") return "question"
+  if (event.type === "permission.asked") return "permission"
+  if (event.type === "session.execution.failed") return event.data?.error?.type === "provider.free-limit" ? undefined : "error"
+  if (event.type === "session.execution.succeeded" || event.type === "session.execution.interrupted")
+    return info?.parentID ? "subagent_done" : "done"
+}
+
+async function sessionInfo(ctx: any, sessionID?: string): Promise<any> {
+  if (!sessionID) return undefined
+  return ctx.session.get({ sessionID }).catch(() => undefined)
 }
 
 function popup(color: string, text: string) {
@@ -34,6 +55,13 @@ const ADD: Record<string, string> = {
   "session.execution.succeeded": "done",
 }
 const CLEAR = new Set(["permission.replied", "question.replied"])
+const SOUND_EVENTS = new Set([
+  "form.created",
+  "permission.asked",
+  "session.execution.succeeded",
+  "session.execution.interrupted",
+  "session.execution.failed",
+])
 
 function windowAddress(title: string): Promise<string | undefined> {
   return new Promise((resolve) => {
@@ -65,9 +93,14 @@ export default {
     const controller = new AbortController()
     void (async () => {
       for await (const event of ctx.event.subscribe({ signal: controller.signal })) {
-        if (!(event.type in ADD) && !CLEAR.has(event.type)) continue
-        const title = await sessionTitle(ctx, event.data?.sessionID)
+        const tracked = event.type in ADD || CLEAR.has(event.type)
+        if (!tracked && !SOUND_EVENTS.has(event.type)) continue
+        const info = await sessionInfo(ctx, event.data?.sessionID ?? event.data?.form?.sessionID)
+        const title = String(info?.title ?? "")
         if (title.startsWith("ocq/")) continue
+        const sound = soundFor(event, info)
+        if (sound) play(sound)
+        if (!tracked) continue
         await track(event, title).catch(() => {})
         if (event.type === "permission.asked" || event.type === "session.execution.succeeded") onEvent(event, title)
       }
