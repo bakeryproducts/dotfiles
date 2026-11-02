@@ -16,6 +16,10 @@
     "mode": "off"
   },
   "animations": false,
+  "plugins": [
+    "/home/gsm/Documents/gski/gski/ocq_lib/tui",
+    "/home/gsm/Documents/gski/gski/ctx_tui"
+  ],
   "attention": {
     "sound": false,
     "volume": 0.6
