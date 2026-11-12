@@ -2,17 +2,18 @@
   "$schema": "https://opencode.ai/config.json",
   "lsp": false,
   "default_agent": "builder",
-  "model": "google/gemini-3.8-flash",
+  "model": "google/gemini-4-carbon",
   "small_model": "google/gemini-3.8-flash",
   "share": "disabled",
   "experimental": {
     "mcp_timeout": 600000
   },
   "compaction": {
-    "auto": false,
+    "auto": true,
     "keep": {
       "tokens": 30000
-    }
+    },
+    "buffer": 700000
   },
   "formatter": false,
   "plugin": [
@@ -40,6 +41,9 @@
     },
     "fixer": {
       "color": "#d3869b"
+    },
+    "manager": {
+      "color": "#b8bb26"
     },
     "orchestrator": {
       "color": "#8ec07c"

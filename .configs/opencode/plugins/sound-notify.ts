@@ -27,9 +27,40 @@ function soundFor(event: any, info: any): string | undefined {
     return info?.parentID ? "subagent_done" : "done"
 }
 
+const WAIT_LOOP_RE = /\bgski\s+(ocm\s+wait|ocq\s+wait-any)\b/
+const isHeadlessTitle = (t?: string) => !!t && (t.startsWith("ocq/") || t.startsWith("ocm/"))
+const listOf = (res: any) => (Array.isArray(res) ? res : res?.data ?? [])
+
 async function sessionInfo(ctx: any, sessionID?: string): Promise<any> {
   if (!sessionID) return undefined
-  return ctx.session.get({ sessionID }).catch(() => undefined)
+  const res = await ctx.session.get({ sessionID }).catch(() => undefined)
+  return res?.data ?? res
+}
+
+async function isHeadlessSession(ctx: any, info: any): Promise<boolean> {
+  if (!info) return false
+  if (isHeadlessTitle(String(info.title ?? ""))) return true
+  let pid = info.parentID
+  for (let i = 0; i < 4 && pid; i++) {
+    const p = await sessionInfo(ctx, pid)
+    if (!p) return false
+    if (isHeadlessTitle(String(p.title ?? ""))) return true
+    pid = p.parentID
+  }
+  return false
+}
+
+async function isWaitingOnLoop(ctx: any, info: any): Promise<boolean> {
+  const sid = info?.id
+  const directory = info?.location?.directory
+  if (!sid || !directory || !ctx.shell?.list) return false
+  const shells = listOf(await ctx.shell.list({ location: { directory } }).catch(() => undefined))
+  return shells.some(
+    (s: any) =>
+      s?.status === "running" &&
+      s?.metadata?.sessionID === sid &&
+      WAIT_LOOP_RE.test(String(s?.command ?? "")),
+  )
 }
 
 function popup(color: string, text: string) {
@@ -96,8 +127,14 @@ export default {
         const tracked = event.type in ADD || CLEAR.has(event.type)
         if (!tracked && !SOUND_EVENTS.has(event.type)) continue
         const info = await sessionInfo(ctx, event.data?.sessionID ?? event.data?.form?.sessionID)
+        if (await isHeadlessSession(ctx, info)) continue
+        if (
+          (event.type === "session.execution.succeeded" || event.type === "session.idle") &&
+          (await isWaitingOnLoop(ctx, info))
+        ) {
+          continue
+        }
         const title = String(info?.title ?? "")
-        if (title.startsWith("ocq/")) continue
         const sound = soundFor(event, info)
         if (sound) play(sound)
         if (!tracked) continue
@@ -106,8 +143,5 @@ export default {
       }
     })().catch(() => {})
     return () => controller.abort()
-  },
-  async server() {
-    return { event: async ({ event }: any) => onEvent(event) }
   },
 }

@@ -1,7 +1,7 @@
 ---
 description: Sparring partner for discussion sessions - reasons along decision frameworks, suggests and critiques, no coding
 mode: primary
-model: google-vertex/gemini-4-argon#medium
+model: google/gemini-4-carbon#medium
 tools:
   write: true
   edit: true
